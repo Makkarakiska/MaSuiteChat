@@ -6,5 +6,6 @@ formats:
   global: "&7%server% %prefix% %realname% &6>&r %message%"
   server: "&fServer %prefix% %realname% 6>&r %message%"
   local: "&6Local %prefix% %realname% &6>&r %message%"
-  private : "&d%sender_realname% &8-> &a%receiver_realname% &6> %message%"
+  private : "&d%sender_realname% &8-> &a%receiver_realname% &6>&r %message%"
+#Channels will be auto-generated
 channels:

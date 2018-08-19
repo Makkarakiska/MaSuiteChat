@@ -1,3 +1,4 @@
+# Basic messages
 player-not-online: "&cPlayer is not online."
 available-player-commands: " &8* &bAvailable commands" # masuitechat.action.player
 available-staff-commands: " &8* &cAvailable staff commands" # masuitechat.action.admin
