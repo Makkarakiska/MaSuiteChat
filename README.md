@@ -5,6 +5,7 @@
 * MySQL-server
 * Java 8
 * [MaSuiteCore](https://github.com/masagameplay/MaSuiteCore/releases "Latest version of MaSuiteCore")
+* Vault
 #### Installation
 * Shut down your BungeeCord
 * [Download MaSuiteCore.jar](https://github.com/masagameplay/MaSuiteCore/releases "Latest version of MaSuiteCore")
