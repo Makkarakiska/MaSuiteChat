@@ -1,0 +1,5 @@
+name: MaSuiteChat
+main: fi.matiaspaavilainen.masuitechat.MaSuiteChat
+version: 1.0
+author: Masagameplay
+depends: [MaSuiteCore]

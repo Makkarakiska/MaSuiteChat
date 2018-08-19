@@ -1,0 +1,4 @@
+player:
+  - "/mail %player% "
+staff:
+  - "/ban %player% "

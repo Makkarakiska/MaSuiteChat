@@ -1,0 +1,44 @@
+package fi.matiaspaavilainen.masuitechat.channels;
+
+import fi.matiaspaavilainen.masuitecore.chat.Date;
+import fi.matiaspaavilainen.masuitecore.chat.Formator;
+import fi.matiaspaavilainen.masuitecore.config.Configuration;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
+
+
+public class Private {
+
+    public static void sendMessage(ProxiedPlayer sender, ProxiedPlayer receiver, String msg) {
+        Configuration config = new Configuration();
+        Formator formator = new Formator();
+        if (receiver != null && receiver.isConnected()) {
+            String format = config.load("chat.yml").getString("formats.private");
+            format = formator.colorize(format
+                    .replace("%sender_nickname%", sender.getDisplayName())
+                    .replace("%receiver_nickname%", receiver.getDisplayName())
+                    .replace("%sender_realname%", sender.getName())
+                    .replace("%receiver_realname%", receiver.getName()));
+            if (sender.hasPermission("masuitechat.chat.colors")) {
+                format = formator.colorize(format.replace("%message%", msg));
+            } else {
+                format = format.replace("%message%", msg);
+            }
+
+            TextComponent message = new TextComponent(format);
+            message.setHoverEvent(new HoverEvent(
+                    HoverEvent.Action.SHOW_TEXT,
+                    new ComponentBuilder(
+                            new Formator().colorize(config.load("messages.yml")
+                                    .getString("message-hover-actions")
+                                    .replace("%timestamp%", new Date().getDate(new java.util.Date()))))
+                            .create()));
+            sender.sendMessage(message);
+            receiver.sendMessage(message);
+        } else {
+            sender.sendMessage(new Formator().colorize(config.load("messages.yml").getString("player-not-online")));
+        }
+    }
+}
