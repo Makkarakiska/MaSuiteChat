@@ -32,9 +32,9 @@ public class MaSuiteChat extends Plugin implements Listener {
         super.onEnable();
         getProxy().getPluginManager().registerListener(this, this);
         getProxy().getPluginManager().registerCommand(this, new ChatActions());
-        config.create(this,"actions.yml");
-        config.create(this,"messages.yml");
-        config.create(this,"chat.yml");
+        config.create(this,"chat","actions.yml");
+        config.create(this,"chat","messages.yml");
+        config.create(this,null,"chat.yml");
         ConfigManager.getActions();
         ServerManager.loadServers();
     }
@@ -56,6 +56,7 @@ public class MaSuiteChat extends Plugin implements Listener {
 
     @EventHandler
     public void onPluginMessage(PluginMessageEvent e) throws IOException {
+        Configuration config = new Configuration();
         if(e.getTag().equals("BungeeCord")){
             DataInputStream in = new DataInputStream(new ByteArrayInputStream(e.getData()));
             String subchannel = in.readUTF();
@@ -78,7 +79,8 @@ public class MaSuiteChat extends Plugin implements Listener {
                             in.readUTF()
                     );
                 }else{
-                    sender.sendMessage(new TextComponent(new Formator().colorize(new Configuration().load("messages.yml").getString("player-not-online"))));
+                    String offline = new Formator().colorize(config.load(null,"messages.yml").getString("player-not-online"));
+                    sender.sendMessage(new TextComponent(offline));
                 }
 
             }
@@ -88,11 +90,10 @@ public class MaSuiteChat extends Plugin implements Listener {
                 String msg = in.readUTF();
                 String px = in.readUTF();
                 String sx = in.readUTF();
-                Configuration config = new Configuration();
 
                 ProxiedPlayer player = ProxyServer.getInstance().getPlayer(p);
                 String server = player.getServer().getInfo().getName().toLowerCase();
-                Integer range = config.load("chat.yml").getInt("channels." + server + ".localRadius");
+                Integer range = config.load(null,"chat.yml").getInt("channels." + server + ".localRadius");
 
                 ByteArrayDataOutput output = ByteStreams.newDataOutput();
                 output.writeUTF("LocalChat");

@@ -6,7 +6,7 @@ import net.md_5.bungee.api.ProxyServer;
 public class ServerManager {
 
     public static void loadServers() {
-        net.md_5.bungee.config.Configuration config = new Configuration().load("chat.yml");
+        net.md_5.bungee.config.Configuration config = new Configuration().load(null,"chat.yml");
         for (String server : ProxyServer.getInstance().getServers().keySet()) {
             if(!config.contains("channels." + server.toLowerCase())){
                 System.out.println("Added " + server + " to channels section!");

@@ -27,7 +27,7 @@ public class ChatActions extends Command implements Listener {
         }
         if (args.length == 1) {
             if (sender.hasPermission("masuitechat.action.player")) {
-                TextComponent c = new TextComponent(formator.colorize(new Configuration().load("messages.yml").getString("available-player-commands")));
+                TextComponent c = new TextComponent(formator.colorize(new Configuration().load("chat","messages.yml").getString("available-player-commands")));
                 sender.sendMessage(c);
                 MaSuiteChat.playerActions
                         .forEach(cmd -> {
@@ -36,7 +36,7 @@ public class ChatActions extends Command implements Listener {
                         );
             }
             if (sender.hasPermission("masuitechat.action.admin")) {
-                TextComponent s = new TextComponent(formator.colorize(new Configuration().load("messages.yml").getString("available-staff-commands")));
+                TextComponent s = new TextComponent(formator.colorize(new Configuration().load("chat","messages.yml").getString("available-staff-commands")));
                 sender.sendMessage(s);
                 MaSuiteChat.staffActions
                         .forEach(cmd -> {
@@ -50,7 +50,7 @@ public class ChatActions extends Command implements Listener {
 
     private TextComponent action(String p, String cmd) {
         String player = cmd.replace("%player%", p);
-        String format = new Configuration().load("chat.yml").getString("formats.actions");
+        String format = new Configuration().load(null,"chat.yml").getString("formats.actions");
         format = formator.colorize(format.replace("%action%", cmd).replace("%player%", p));
         TextComponent command = new TextComponent(format);
         command.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, player));

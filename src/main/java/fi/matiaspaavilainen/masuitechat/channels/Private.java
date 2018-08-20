@@ -1,10 +1,7 @@
 package fi.matiaspaavilainen.masuitechat.channels;
 
-import fi.matiaspaavilainen.masuitecore.chat.Date;
 import fi.matiaspaavilainen.masuitecore.chat.Formator;
 import fi.matiaspaavilainen.masuitecore.config.Configuration;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
@@ -13,8 +10,8 @@ public class Private {
     public static void sendMessage(ProxiedPlayer sender, ProxiedPlayer receiver, String msg) {
         Configuration config = new Configuration();
         Formator formator = new Formator();
-        if (receiver != null && receiver.isConnected()) {
-            String format = config.load("chat.yml").getString("formats.private");
+        if (receiver != null) {
+            String format = config.load(null,"chat.yml").getString("formats.private");
             format = formator.colorize(format
                     .replace("%sender_nickname%", sender.getDisplayName())
                     .replace("%receiver_nickname%", receiver.getDisplayName())
@@ -30,7 +27,7 @@ public class Private {
             sender.sendMessage(message);
             receiver.sendMessage(message);
         } else {
-            sender.sendMessage(new TextComponent(new Formator().colorize(config.load("messages.yml").getString("player-not-online"))));
+            sender.sendMessage(new TextComponent(new Formator().colorize(config.load(null,"messages.yml").getString("player-not-online"))));
         }
     }
 }

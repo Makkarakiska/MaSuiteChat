@@ -13,8 +13,8 @@ public class Utilities {
         Formator formator = new Formator();
         Configuration config = new Configuration();
 
-        String format = config.load("chat.yml").getString("formats." + channel);
-        String server = config.load("chat.yml").getString("channels." + p.getServer().getInfo().getName().toLowerCase() + ".prefix");
+        String format = config.load(null,"chat.yml").getString("formats." + channel);
+        String server = config.load(null,"chat.yml").getString("channels." + p.getServer().getInfo().getName().toLowerCase() + ".prefix");
 
         format = formator.colorize(format.replace("%server%", server)
                 .replace("%prefix%", px)
@@ -30,7 +30,7 @@ public class Utilities {
         TextComponent base = new TextComponent(format);
         base.setHoverEvent(
                 new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                        new ComponentBuilder(formator.colorize(config.load("messages.yml")
+                        new ComponentBuilder(formator.colorize(config.load("chat","messages.yml")
                                 .getString("message-hover-actions")
                                 .replace("%timestamp%", new Date().getDate(new java.util.Date())))).create()));
         base.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/chatactions " + p.getName()));

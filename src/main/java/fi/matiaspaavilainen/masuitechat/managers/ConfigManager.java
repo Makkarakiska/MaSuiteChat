@@ -8,7 +8,7 @@ public class ConfigManager {
     public static void getActions() {
         net.md_5.bungee.config.Configuration config = null;
         try {
-            config = new Configuration().load("actions.yml");
+            config = new Configuration().load("chat","actions.yml");
             MaSuiteChat.staffActions.addAll(config.getStringList("staff"));
             MaSuiteChat.playerActions.addAll(config.getStringList("player"));
         } catch (Exception e) {
