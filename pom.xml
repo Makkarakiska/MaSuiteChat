@@ -41,8 +41,7 @@
         <dependency>
             <groupId>com.github.masagameplay</groupId>
             <artifactId>masuitecore</artifactId>
-            <version>53adaaecb2</version>
+            <version>80affe9df6</version>
         </dependency>
-
     </dependencies>
 </project>

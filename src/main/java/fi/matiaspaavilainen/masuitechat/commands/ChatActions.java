@@ -16,9 +16,11 @@ public class ChatActions extends Command implements Listener {
         super("chatactions");
     }
 
+    private Formator formator = new Formator();
+
     @Override
     public void execute(CommandSender sender, String[] args) {
-        Formator formator = new Formator();
+
         if (!(sender instanceof ProxiedPlayer)) {
             System.out.println("Only players can execute this command!");
             return;
@@ -29,10 +31,7 @@ public class ChatActions extends Command implements Listener {
                 sender.sendMessage(c);
                 MaSuiteChat.playerActions
                         .forEach(cmd -> {
-                                    String player = cmd.replace("%player%", args[0]);
-                                    TextComponent command = new TextComponent(formator.colorize("    &8► &7" + player));
-                                    command.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, player));
-                                    sender.sendMessage(command);
+                                    sender.sendMessage(action(args[0], cmd));
                                 }
                         );
             }
@@ -41,14 +40,20 @@ public class ChatActions extends Command implements Listener {
                 sender.sendMessage(s);
                 MaSuiteChat.staffActions
                         .forEach(cmd -> {
-                                    String player = cmd.replace("%player%", args[0]);
-                                    TextComponent command = new TextComponent(formator.colorize("    &8► &7" + player));
-                                    command.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, player));
-                                    sender.sendMessage(command);
+                                    sender.sendMessage(action(args[0], cmd));
                                 }
                         );
             }
 
         }
+    }
+
+    private TextComponent action(String p, String cmd) {
+        String player = cmd.replace("%player%", p);
+        String format = new Configuration().load("chat.yml").getString("formats.actions");
+        format = formator.colorize(format.replace("%action%", cmd).replace("%player%", p));
+        TextComponent command = new TextComponent(format);
+        command.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, player));
+        return command;
     }
 }

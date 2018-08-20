@@ -10,7 +10,6 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 
 public class Private {
-
     public static void sendMessage(ProxiedPlayer sender, ProxiedPlayer receiver, String msg) {
         Configuration config = new Configuration();
         Formator formator = new Formator();
@@ -28,17 +27,10 @@ public class Private {
             }
 
             TextComponent message = new TextComponent(format);
-            message.setHoverEvent(new HoverEvent(
-                    HoverEvent.Action.SHOW_TEXT,
-                    new ComponentBuilder(
-                            new Formator().colorize(config.load("messages.yml")
-                                    .getString("message-hover-actions")
-                                    .replace("%timestamp%", new Date().getDate(new java.util.Date()))))
-                            .create()));
             sender.sendMessage(message);
             receiver.sendMessage(message);
         } else {
-            sender.sendMessage(new Formator().colorize(config.load("messages.yml").getString("player-not-online")));
+            sender.sendMessage(new TextComponent(new Formator().colorize(config.load("messages.yml").getString("player-not-online"))));
         }
     }
 }

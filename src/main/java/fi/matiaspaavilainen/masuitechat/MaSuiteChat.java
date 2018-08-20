@@ -9,6 +9,7 @@ import fi.matiaspaavilainen.masuitecore.MaSuiteCore;
 import fi.matiaspaavilainen.masuitecore.chat.Formator;
 import fi.matiaspaavilainen.masuitecore.config.Configuration;
 import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
 import net.md_5.bungee.api.event.PluginMessageEvent;
@@ -23,8 +24,6 @@ import java.util.List;
 
 public class MaSuiteChat extends Plugin implements Listener {
 
-    MaSuiteCore core = new MaSuiteCore();
-    private List<String> onlinePlayers = new ArrayList<>();
     public static List<String> playerActions = new ArrayList<>();
     public static List<String> staffActions = new ArrayList<>();
     @Override
@@ -43,21 +42,16 @@ public class MaSuiteChat extends Plugin implements Listener {
     @EventHandler
     public void onJoin(PostLoginEvent e){
         ProxiedPlayer p = e.getPlayer();
-        onlinePlayers.add(p.getName());
     }
 
     @EventHandler
     public void onQuit(PlayerDisconnectEvent e){
         ProxiedPlayer p = e.getPlayer();
-        onlinePlayers.remove(p.getName());
     }
 
     @Override
     public void onLoad() {
         super.onLoad();
-        for(ProxiedPlayer p : getProxy().getPlayers()){
-            onlinePlayers.add(p.getName());
-        }
     }
 
     @EventHandler
@@ -75,16 +69,16 @@ public class MaSuiteChat extends Plugin implements Listener {
                 Admin.sendMessage(ProxyServer.getInstance().getPlayer(in.readUTF()), in.readUTF(), in.readUTF(), in.readUTF());
             }
             if(subchannel.equals("PrivateChat")){
-                String sender = in.readUTF();
-                String receiver = in.readUTF();
-                if(onlinePlayers.contains(receiver)){
+                ProxiedPlayer sender = ProxyServer.getInstance().getPlayer(in.readUTF());
+                ProxiedPlayer receiver = ProxyServer.getInstance().getPlayer(in.readUTF());
+                if (receiver != null) {
                     Private.sendMessage(
-                            ProxyServer.getInstance().getPlayer(sender),
-                            ProxyServer.getInstance().getPlayer(receiver),
+                            sender,
+                            receiver,
                             in.readUTF()
                     );
                 }else{
-                    ProxyServer.getInstance().getPlayer(sender).sendMessage(new Formator().colorize(new Configuration().load("messages.yml").getString("player-not-online")));
+                    sender.sendMessage(new TextComponent(new Formator().colorize(new Configuration().load("messages.yml").getString("player-not-online"))));
                 }
 
             }
