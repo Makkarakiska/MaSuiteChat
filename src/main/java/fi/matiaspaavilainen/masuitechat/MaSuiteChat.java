@@ -3,6 +3,7 @@ import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import fi.matiaspaavilainen.masuitechat.channels.*;
 import fi.matiaspaavilainen.masuitechat.commands.ChatActions;
+import fi.matiaspaavilainen.masuitechat.commands.Reply;
 import fi.matiaspaavilainen.masuitechat.managers.ConfigManager;
 import fi.matiaspaavilainen.masuitechat.managers.ServerManager;
 import fi.matiaspaavilainen.masuitecore.MaSuiteCore;
@@ -32,6 +33,7 @@ public class MaSuiteChat extends Plugin implements Listener {
         super.onEnable();
         getProxy().getPluginManager().registerListener(this, this);
         getProxy().getPluginManager().registerCommand(this, new ChatActions());
+        getProxy().getPluginManager().registerCommand(this, new Reply());
         config.create(this,"chat","actions.yml");
         config.create(this,"chat","messages.yml");
         config.create(this,null,"chat.yml");

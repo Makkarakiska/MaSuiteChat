@@ -5,8 +5,12 @@ import fi.matiaspaavilainen.masuitecore.config.Configuration;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
+import java.util.HashMap;
+import java.util.UUID;
+
 
 public class Private {
+    public static HashMap<UUID, UUID> conversations = new HashMap<>();
     public static void sendMessage(ProxiedPlayer sender, ProxiedPlayer receiver, String msg) {
         Configuration config = new Configuration();
         Formator formator = new Formator();
@@ -26,6 +30,8 @@ public class Private {
             TextComponent message = new TextComponent(format);
             sender.sendMessage(message);
             receiver.sendMessage(message);
+            conversations.put(receiver.getUniqueId(), sender.getUniqueId());
+            conversations.put(sender.getUniqueId(), receiver.getUniqueId());
         } else {
             sender.sendMessage(new TextComponent(new Formator().colorize(config.load(null,"messages.yml").getString("player-not-online"))));
         }
