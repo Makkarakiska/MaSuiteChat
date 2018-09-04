@@ -5,6 +5,7 @@ import fi.matiaspaavilainen.masuitecore.chat.Formator;
 import fi.matiaspaavilainen.masuitecore.config.Configuration;
 import net.md_5.bungee.api.chat.*;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.chat.ComponentSerializer;
 
 public class Utilities {
 

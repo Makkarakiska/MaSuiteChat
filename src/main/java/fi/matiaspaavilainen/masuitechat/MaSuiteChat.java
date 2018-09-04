@@ -1,16 +1,15 @@
 package fi.matiaspaavilainen.masuitechat;
+
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import fi.matiaspaavilainen.masuitechat.channels.*;
 import fi.matiaspaavilainen.masuitechat.commands.ChatActions;
+import fi.matiaspaavilainen.masuitechat.commands.Message;
 import fi.matiaspaavilainen.masuitechat.commands.Reply;
 import fi.matiaspaavilainen.masuitechat.managers.ConfigManager;
 import fi.matiaspaavilainen.masuitechat.managers.ServerManager;
-import fi.matiaspaavilainen.masuitecore.MaSuiteCore;
-import fi.matiaspaavilainen.masuitecore.chat.Formator;
 import fi.matiaspaavilainen.masuitecore.config.Configuration;
 import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
 import net.md_5.bungee.api.event.PluginMessageEvent;
@@ -21,91 +20,113 @@ import net.md_5.bungee.event.EventHandler;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 public class MaSuiteChat extends Plugin implements Listener {
 
     public static List<String> playerActions = new ArrayList<>();
     public static List<String> staffActions = new ArrayList<>();
+    private static HashMap<UUID, String> players = new HashMap<>();
+    public static HashMap<String, Channel> channels = new HashMap<>();
     @Override
     public void onEnable() {
-        Configuration config = new Configuration();
         super.onEnable();
+        Configuration config = new Configuration();
         getProxy().getPluginManager().registerListener(this, this);
+
+        // Create configs
+        config.create(this, "chat", "actions.yml");
+        config.create(this, "chat", "messages.yml");
+        config.create(this, "chat", "chat.yml");
+        config.create(this, "chat", "syntax.yml");
+
+        // Chat Actions for messages
         getProxy().getPluginManager().registerCommand(this, new ChatActions());
+
+        // Private messaging
+        getProxy().getPluginManager().registerCommand(this, new Message());
         getProxy().getPluginManager().registerCommand(this, new Reply());
-        config.create(this,"chat","actions.yml");
-        config.create(this,"chat","messages.yml");
-        config.create(this,null,"chat.yml");
+
+
+
+        // Load actions, servers and channels
         ConfigManager.getActions();
         ServerManager.loadServers();
+        loadChannels();
     }
 
     @EventHandler
-    public void onJoin(PostLoginEvent e){
+    public void onJoin(PostLoginEvent e) {
         ProxiedPlayer p = e.getPlayer();
+        // Add player to global channel on join
+        players.put(p.getUniqueId(), "global");
     }
 
     @EventHandler
-    public void onQuit(PlayerDisconnectEvent e){
+    public void onQuit(PlayerDisconnectEvent e) {
         ProxiedPlayer p = e.getPlayer();
+        // Remove player from channels on leave
+        players.remove(p.getUniqueId());
     }
 
     @Override
     public void onLoad() {
         super.onLoad();
+        loadChannels();
     }
 
+    private void loadChannels(){
+        Configuration config = new Configuration();
+        channels.put("staff", new Channel("staff", "staff", "masuitechat.channel.staff", config.load("chat", "chat.yml").getString("formats.staff")));
+        channels.put("global", new Channel("global", "global", "masuitechat.channel.global", config.load("chat", "chat.yml").getString("formats.global")));
+        channels.put("server", new Channel("server", "server", "masuitechat.channel.server", config.load("chat", "chat.yml").getString("formats.server")));
+        channels.put("local", new Channel("local", "local", "masuitechat.channel.global", config.load("chat", "chat.yml").getString("formats.local")));
+
+    }
     @EventHandler
     public void onPluginMessage(PluginMessageEvent e) throws IOException {
         Configuration config = new Configuration();
-        if(e.getTag().equals("BungeeCord")){
+        if (e.getTag().equals("BungeeCord")) {
             DataInputStream in = new DataInputStream(new ByteArrayInputStream(e.getData()));
             String subchannel = in.readUTF();
-            if(subchannel.equals("GlobalChat")){
-                Global.sendMessage(ProxyServer.getInstance().getPlayer(in.readUTF()), in.readUTF(), in.readUTF(), in.readUTF());
-            }
-            if(subchannel.equals("ServerChat")){
-                Server.sendMessage(ProxyServer.getInstance().getPlayer(in.readUTF()), in.readUTF(), in.readUTF(), in.readUTF());
-            }
-            if(subchannel.equals("AdminChat")){
-                Admin.sendMessage(ProxyServer.getInstance().getPlayer(in.readUTF()), in.readUTF(), in.readUTF(), in.readUTF());
-            }
-            if(subchannel.equals("PrivateChat")){
-                ProxiedPlayer sender = ProxyServer.getInstance().getPlayer(in.readUTF());
-                ProxiedPlayer receiver = ProxyServer.getInstance().getPlayer(in.readUTF());
-                if (receiver != null) {
-                    Private.sendMessage(
-                            sender,
-                            receiver,
-                            in.readUTF()
-                    );
-                }else{
-                    String offline = new Formator().colorize(config.load(null,"messages.yml").getString("player-not-online"));
-                    sender.sendMessage(new TextComponent(offline));
+            if (subchannel.equals("MaSuiteChat")) {
+                ProxiedPlayer p = ProxyServer.getInstance().getPlayer(in.readUTF());
+                if (p == null) {
+                    return;
                 }
+                switch (players.get(p.getUniqueId())) {
+                    case ("global"):
+                        Global.sendMessage(p, in.readUTF(), in.readUTF(), in.readUTF());
+                        break;
+                    case ("server"):
+                        Server.sendMessage(p, in.readUTF(), in.readUTF(), in.readUTF());
+                        break;
+                    case ("staff"):
+                        Staff.sendMessage(p, in.readUTF(), in.readUTF(), in.readUTF());
+                        break;
+                    case ("local"):
+                        String msg = in.readUTF();
+                        String px = in.readUTF();
+                        String sx = in.readUTF();
 
-            }
-            if(subchannel.equals("LocalChat")){
+                        String server = p.getServer().getInfo().getName().toLowerCase();
+                        Integer range = config.load(null, "chat.yml").getInt("channels." + server + ".localRadius");
 
-                String p = in.readUTF();
-                String msg = in.readUTF();
-                String px = in.readUTF();
-                String sx = in.readUTF();
-
-                ProxiedPlayer player = ProxyServer.getInstance().getPlayer(p);
-                String server = player.getServer().getInfo().getName().toLowerCase();
-                Integer range = config.load(null,"chat.yml").getInt("channels." + server + ".localRadius");
-
-                ByteArrayDataOutput output = ByteStreams.newDataOutput();
-                output.writeUTF("LocalChat");
-                output.writeUTF(Local.sendMessage(player, msg, px, sx));
-                output.writeUTF(String.valueOf(range));
-                player.getServer().sendData("BungeeCord", output.toByteArray());
+                        ByteArrayDataOutput output = ByteStreams.newDataOutput();
+                        output.writeUTF("LocalChat");
+                        output.writeUTF(Local.sendMessage(p, msg, px, sx));
+                        output.writeUTF(String.valueOf(range));
+                        p.getServer().sendData("BungeeCord", output.toByteArray());
+                        break;
+                    default:
+                        System.out.println("Player " + p.getName() + " does not have channel for some reason!");
+                        break;
+                }
             }
         }
     }
-
 
 
 }
