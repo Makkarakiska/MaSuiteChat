@@ -28,7 +28,7 @@ public class MaSuiteChat extends Plugin implements Listener {
 
     public static List<String> playerActions = new ArrayList<>();
     public static List<String> staffActions = new ArrayList<>();
-    private static HashMap<UUID, String> players = new HashMap<>();
+    public static HashMap<UUID, String> players = new HashMap<>();
     public static HashMap<String, Channel> channels = new HashMap<>();
     @Override
     public void onEnable() {
@@ -49,6 +49,12 @@ public class MaSuiteChat extends Plugin implements Listener {
         getProxy().getPluginManager().registerCommand(this, new Message());
         getProxy().getPluginManager().registerCommand(this, new Reply());
 
+
+        //Commannds
+        getProxy().getPluginManager().registerCommand(this, new fi.matiaspaavilainen.masuitechat.commands.channels.Staff());
+        getProxy().getPluginManager().registerCommand(this, new fi.matiaspaavilainen.masuitechat.commands.channels.Global());
+        getProxy().getPluginManager().registerCommand(this, new fi.matiaspaavilainen.masuitechat.commands.channels.Server());
+        getProxy().getPluginManager().registerCommand(this, new fi.matiaspaavilainen.masuitechat.commands.channels.Local());
 
 
         // Load actions, servers and channels
@@ -98,13 +104,13 @@ public class MaSuiteChat extends Plugin implements Listener {
                 }
                 switch (players.get(p.getUniqueId())) {
                     case ("global"):
-                        Global.sendMessage(p, in.readUTF(), in.readUTF(), in.readUTF());
+                        Global.sendMessage(p, in.readUTF());
                         break;
                     case ("server"):
-                        Server.sendMessage(p, in.readUTF(), in.readUTF(), in.readUTF());
+                        Server.sendMessage(p, in.readUTF());
                         break;
                     case ("staff"):
-                        Staff.sendMessage(p, in.readUTF(), in.readUTF(), in.readUTF());
+                        Staff.sendMessage(p, in.readUTF());
                         break;
                     case ("local"):
                         String msg = in.readUTF();
@@ -116,12 +122,12 @@ public class MaSuiteChat extends Plugin implements Listener {
 
                         ByteArrayDataOutput output = ByteStreams.newDataOutput();
                         output.writeUTF("LocalChat");
-                        output.writeUTF(Local.sendMessage(p, msg, px, sx));
+                        output.writeUTF(Local.sendMessage(p, msg));
                         output.writeUTF(String.valueOf(range));
                         p.getServer().sendData("BungeeCord", output.toByteArray());
                         break;
                     default:
-                        System.out.println("Player " + p.getName() + " does not have channel for some reason!");
+                        System.out.println("Player " + p.getName() + " does not have channel for some reason! Please relog!");
                         break;
                 }
             }

@@ -3,25 +3,27 @@ package fi.matiaspaavilainen.masuitechat;
 import fi.matiaspaavilainen.masuitecore.chat.Date;
 import fi.matiaspaavilainen.masuitecore.chat.Formator;
 import fi.matiaspaavilainen.masuitecore.config.Configuration;
+import fi.matiaspaavilainen.masuitecore.managers.MaSuitePlayer;
 import net.md_5.bungee.api.chat.*;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.chat.ComponentSerializer;
 
 public class Utilities {
 
-    public static TextComponent chatFormat(ProxiedPlayer p, String msg, String px, String sx, String channel) {
+    public static TextComponent chatFormat(ProxiedPlayer p, String msg, String channel) {
 
         Formator formator = new Formator();
         Configuration config = new Configuration();
 
+        MaSuitePlayer msp = new MaSuitePlayer();
         String format = config.load(null,"chat.yml").getString("formats." + channel);
         String server = config.load(null,"chat.yml").getString("channels." + p.getServer().getInfo().getName().toLowerCase() + ".prefix");
 
         format = formator.colorize(format.replace("%server%", server)
-                .replace("%prefix%", px)
+                .replace("%prefix%", msp.getGroup(p.getUniqueId()).getPrefix())
                 .replace("%nickname%", p.getDisplayName())
                 .replace("%realname%", p.getName())
-                .replace("%suffix%", sx));
+                .replace("%suffix%", msp.getGroup(p.getUniqueId()).getSuffix()));
 
         if (p.hasPermission("masuitechat.chat.colors")) {
             format = formator.colorize(format.replace("%message%", msg));
