@@ -3,10 +3,14 @@ package fi.matiaspaavilainen.masuitechat;
 import fi.matiaspaavilainen.masuitecore.chat.Date;
 import fi.matiaspaavilainen.masuitecore.chat.Formator;
 import fi.matiaspaavilainen.masuitecore.config.Configuration;
+import fi.matiaspaavilainen.masuitecore.managers.Group;
 import fi.matiaspaavilainen.masuitecore.managers.MaSuitePlayer;
 import net.md_5.bungee.api.chat.*;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.chat.ComponentSerializer;
+import net.md_5.bungee.protocol.packet.Chat;
+
+import java.util.Arrays;
 
 public class Utilities {
 
@@ -16,14 +20,16 @@ public class Utilities {
         Configuration config = new Configuration();
 
         MaSuitePlayer msp = new MaSuitePlayer();
-        String format = config.load(null,"chat.yml").getString("formats." + channel);
-        String server = config.load(null,"chat.yml").getString("channels." + p.getServer().getInfo().getName().toLowerCase() + ".prefix");
+        String format = config.load(null, "chat.yml").getString("formats." + channel);
+        String server = config.load(null, "chat.yml").getString("channels." + p.getServer().getInfo().getName().toLowerCase() + ".prefix");
 
-        format = formator.colorize(format.replace("%server%", server)
-                .replace("%prefix%", msp.getGroup(p.getUniqueId()).getPrefix())
-                .replace("%nickname%", p.getDisplayName())
-                .replace("%realname%", p.getName())
-                .replace("%suffix%", msp.getGroup(p.getUniqueId()).getSuffix()));
+        Group group = msp.getGroup(p.getUniqueId());
+        format = formator.colorize(
+                format.replace("%server%", server)
+                        .replace("%prefix%", group.getPrefix() != null ? group.getPrefix() : "")
+                        .replace("%nickname%", p.getDisplayName())
+                        .replace("%realname%", p.getName())
+                        .replace("%suffix%", group.getSuffix()!= null ? group.getSuffix() : ""));
         if (p.hasPermission("masuitechat.chat.colors")) {
             format = formator.colorize(format.replace("%message%", msg));
         } else {
@@ -46,10 +52,12 @@ public class Utilities {
         }
         message.setClickEvent( new ClickEvent( ClickEvent.Action.OPEN_URL, "https://www.spigotmc.org" ) );
         message.setHoverEvent(null);*/
-        TextComponent base = new TextComponent(format);
+        TextComponent base = new TextComponent();
+        base.setText(format);
+
         base.setHoverEvent(
                 new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                        new ComponentBuilder(formator.colorize(config.load("chat","messages.yml")
+                        new ComponentBuilder(formator.colorize(config.load("chat", "messages.yml")
                                 .getString("message-hover-actions")
                                 .replace("%timestamp%", new Date().getDate(new java.util.Date())))).create()));
         base.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/chatactions " + p.getName()));
