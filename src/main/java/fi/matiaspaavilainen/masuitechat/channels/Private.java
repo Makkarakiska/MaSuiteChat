@@ -2,6 +2,8 @@ package fi.matiaspaavilainen.masuitechat.channels;
 
 import fi.matiaspaavilainen.masuitecore.chat.Formator;
 import fi.matiaspaavilainen.masuitecore.config.Configuration;
+import fi.matiaspaavilainen.masuitecore.managers.Group;
+import fi.matiaspaavilainen.masuitecore.managers.MaSuitePlayer;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
@@ -15,12 +17,24 @@ public class Private {
         Configuration config = new Configuration();
         Formator formator = new Formator();
         if (receiver != null) {
-            String format = config.load(null,"chat.yml").getString("formats.private");
+            String format = config.load("chat","chat.yml").getString("formats.private");
+            MaSuitePlayer mspSender = new MaSuitePlayer();
+            Group senderGroup = mspSender.getGroup(sender.getUniqueId());
+            Group receiverGroup = mspSender.getGroup(receiver.getUniqueId());
+            String sP = senderGroup.getPrefix() != null ? senderGroup.getPrefix() : "";
+            String sS = senderGroup.getSuffix() != null ? senderGroup.getSuffix() : "";
+            String rP = receiverGroup.getPrefix() != null ? receiverGroup.getPrefix() : "";
+            String rS = receiverGroup.getSuffix() != null ? receiverGroup.getSuffix() : "";
             format = formator.colorize(format
                     .replace("%sender_nickname%", sender.getDisplayName())
                     .replace("%receiver_nickname%", receiver.getDisplayName())
                     .replace("%sender_realname%", sender.getName())
-                    .replace("%receiver_realname%", receiver.getName()));
+                    .replace("%receiver_realname%", receiver.getName())
+                    .replace("%sender_prefix%", sP)
+                    .replace("%sender_suffix%", sS)
+                    .replace("%receiver_prefix%", rP)
+                    .replace("%receiver_suffix%", rS)
+            );
             if (sender.hasPermission("masuitechat.chat.colors")) {
                 format = formator.colorize(format.replace("%message%", msg));
             } else {
