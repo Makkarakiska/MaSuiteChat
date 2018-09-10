@@ -15,16 +15,16 @@ public class Server extends Command {
 
     @Override
     public void execute(CommandSender cs, String[] args) {
-        if(!(cs instanceof ProxiedPlayer)){
+        if (!(cs instanceof ProxiedPlayer)) {
             return;
         }
         ProxiedPlayer p = (ProxiedPlayer) cs;
         Formator formator = new Formator();
         Configuration config = new Configuration();
-        if(args.length == 0){
+        if (args.length == 0) {
             MaSuiteChat.players.put(p.getUniqueId(), "server");
             formator.sendMessage(p, config.load("chat", "messages.yml").getString("channel-changed.server"));
-        }else{
+        } else {
             fi.matiaspaavilainen.masuitechat.channels.Server.sendMessage(p, Joiner.on(" ").join(args));
         }
     }

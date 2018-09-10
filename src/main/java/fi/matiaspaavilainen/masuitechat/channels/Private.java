@@ -17,7 +17,7 @@ public class Private {
         Configuration config = new Configuration();
         Formator formator = new Formator();
         if (receiver != null) {
-            String format = config.load(null,"chat.yml").getString("formats.private");
+            String format = config.load("chat","chat.yml").getString("formats.private");
             MaSuitePlayer mspSender = new MaSuitePlayer();
             Group senderGroup = mspSender.getGroup(sender.getUniqueId());
             Group receiverGroup = mspSender.getGroup(receiver.getUniqueId());

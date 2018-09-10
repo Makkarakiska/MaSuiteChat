@@ -20,8 +20,8 @@ public class Utilities {
         Configuration config = new Configuration();
 
         MaSuitePlayer msp = new MaSuitePlayer();
-        String format = config.load(null, "chat.yml").getString("formats." + channel);
-        String server = config.load(null, "chat.yml").getString("channels." + p.getServer().getInfo().getName().toLowerCase() + ".prefix");
+        String format = config.load("chat", "chat.yml").getString("formats." + channel);
+        String server = config.load("chat", "chat.yml").getString("channels." + p.getServer().getInfo().getName().toLowerCase() + ".prefix");
 
         Group group = msp.getGroup(p.getUniqueId());
         format = formator.colorize(

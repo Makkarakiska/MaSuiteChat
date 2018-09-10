@@ -1,12 +1,12 @@
 # Available variables for channels are: %server% %prefix% %nickname% %realname% %suffix% and %message%.
-# Available variables for private messaging are: %sender_nickname% %sender_realname% %receiver_nickname% %receiver_nickname% and %message%
+# Available variables for private messaging are: %sender_prefix% %sender_suffix% %sender_nickname% %sender_realname% %receiver_prefix% %receiver_suffix% %receiver_nickname% %receiver_realname% and %message%
 # Color codes are using usual &-format
 formats:
   staff: "&cStaff &7%server% %prefix% %realname% &6>&r %message%"
   global: "&7%server% %prefix% %realname% &6>&r %message%"
-  server: "&fServer %prefix% %realname% 6>&r %message%"
+  server: "&fServer %prefix% %realname% &6>&r %message%"
   local: "&6Local %prefix% %realname% &6>&r %message%"
-  private : "&d%sender_realname% &8-> &a%receiver_realname% &6>&r %message%"
+  private : "%sender_prefix% %sender_realname% %sender_suffix%&8-> %receiver_prefix% %receiver_realname% %receiver_suffix%&6>&r %message%"
   actions: "    &8> &7 %action%" #%action% will be replaced with actions from actions.yml
 #Channels will be auto-generated
 channels:

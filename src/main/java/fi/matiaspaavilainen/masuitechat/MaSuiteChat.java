@@ -30,6 +30,7 @@ public class MaSuiteChat extends Plugin implements Listener {
     public static List<String> staffActions = new ArrayList<>();
     public static HashMap<UUID, String> players = new HashMap<>();
     public static HashMap<String, Channel> channels = new HashMap<>();
+
     @Override
     public void onEnable() {
         super.onEnable();
@@ -60,7 +61,6 @@ public class MaSuiteChat extends Plugin implements Listener {
         // Load actions, servers and channels
         ConfigManager.getActions();
         ServerManager.loadServers();
-        loadChannels();
     }
 
     @EventHandler
@@ -80,17 +80,8 @@ public class MaSuiteChat extends Plugin implements Listener {
     @Override
     public void onLoad() {
         super.onLoad();
-        loadChannels();
     }
 
-    private void loadChannels(){
-        Configuration config = new Configuration();
-        channels.put("staff", new Channel("staff", "staff", "masuitechat.channel.staff", config.load("chat", "chat.yml").getString("formats.staff")));
-        channels.put("global", new Channel("global", "global", "masuitechat.channel.global", config.load("chat", "chat.yml").getString("formats.global")));
-        channels.put("server", new Channel("server", "server", "masuitechat.channel.server", config.load("chat", "chat.yml").getString("formats.server")));
-        channels.put("local", new Channel("local", "local", "masuitechat.channel.global", config.load("chat", "chat.yml").getString("formats.local")));
-
-    }
     @EventHandler
     public void onPluginMessage(PluginMessageEvent e) throws IOException {
         Configuration config = new Configuration();
@@ -114,16 +105,14 @@ public class MaSuiteChat extends Plugin implements Listener {
                         break;
                     case ("local"):
                         String msg = in.readUTF();
-                        String px = in.readUTF();
-                        String sx = in.readUTF();
 
                         String server = p.getServer().getInfo().getName().toLowerCase();
-                        Integer range = config.load(null, "chat.yml").getInt("channels." + server + ".localRadius");
+                        int range = config.load("chat", "chat.yml").getInt("channels." + server + ".localRadius");
 
                         ByteArrayDataOutput output = ByteStreams.newDataOutput();
                         output.writeUTF("LocalChat");
                         output.writeUTF(Local.sendMessage(p, msg));
-                        output.writeUTF(String.valueOf(range));
+                        output.writeInt(range);
                         p.getServer().sendData("BungeeCord", output.toByteArray());
                         break;
                     default:
