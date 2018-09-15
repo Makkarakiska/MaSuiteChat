@@ -8,6 +8,7 @@ import fi.matiaspaavilainen.masuitechat.commands.Message;
 import fi.matiaspaavilainen.masuitechat.commands.Reply;
 import fi.matiaspaavilainen.masuitechat.managers.ConfigManager;
 import fi.matiaspaavilainen.masuitechat.managers.ServerManager;
+import fi.matiaspaavilainen.masuitecore.Updator;
 import fi.matiaspaavilainen.masuitecore.config.Configuration;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -61,6 +62,8 @@ public class MaSuiteChat extends Plugin implements Listener {
         // Load actions, servers and channels
         ConfigManager.getActions();
         ServerManager.loadServers();
+
+        new Updator().checkVersion(this.getDescription(), "60039");
     }
 
     @EventHandler
