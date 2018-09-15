@@ -3,6 +3,8 @@ package fi.matiaspaavilainen.masuitechat.commands;
 import fi.matiaspaavilainen.masuitechat.channels.Private;
 import fi.matiaspaavilainen.masuitecore.chat.Formator;
 import fi.matiaspaavilainen.masuitecore.config.Configuration;
+import fi.matiaspaavilainen.masuitecore.managers.Group;
+import fi.matiaspaavilainen.masuitecore.managers.MaSuitePlayer;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -30,11 +32,20 @@ public class Reply extends Command {
                 }
 
                 String format = config.load("chat", "chat.yml").getString("formats.private");
+                MaSuitePlayer msp = new MaSuitePlayer();
+                Group senderGroup = msp.getGroup(p.getUniqueId());
+                Group receiverGroup = msp.getGroup(receiver.getUniqueId());
+
                 format = formator.colorize(format
                         .replace("%sender_nickname%", p.getDisplayName())
                         .replace("%receiver_nickname%", receiver.getDisplayName())
                         .replace("%sender_realname%", p.getName())
-                        .replace("%receiver_realname%", receiver.getName()));
+                        .replace("%receiver_realname%", receiver.getName())
+                        .replace("%sender_prefix%", senderGroup.getPrefix() != null ? senderGroup.getPrefix() : "")
+                        .replace("%sender_suffix%", senderGroup.getSuffix() != null ? senderGroup.getSuffix() : "")
+                        .replace("%receiver_prefix%", receiverGroup.getPrefix() != null ? receiverGroup.getPrefix() : "")
+                        .replace("%receiver_suffix%", receiverGroup.getSuffix() != null ? receiverGroup.getSuffix() : "")
+                );
                 if (sender.hasPermission("masuitechat.chat.colors")) {
                     format = formator.colorize(format.replace("%message%", msg.toString()));
                 } else {
