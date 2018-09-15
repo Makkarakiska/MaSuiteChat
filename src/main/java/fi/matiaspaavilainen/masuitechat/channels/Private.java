@@ -18,22 +18,19 @@ public class Private {
         Formator formator = new Formator();
         if (receiver != null) {
             String format = config.load("chat","chat.yml").getString("formats.private");
-            MaSuitePlayer mspSender = new MaSuitePlayer();
-            Group senderGroup = mspSender.getGroup(sender.getUniqueId());
-            Group receiverGroup = mspSender.getGroup(receiver.getUniqueId());
-            String sP = senderGroup.getPrefix() != null ? senderGroup.getPrefix() : "";
-            String sS = senderGroup.getSuffix() != null ? senderGroup.getSuffix() : "";
-            String rP = receiverGroup.getPrefix() != null ? receiverGroup.getPrefix() : "";
-            String rS = receiverGroup.getSuffix() != null ? receiverGroup.getSuffix() : "";
+            MaSuitePlayer msp = new MaSuitePlayer();
+            Group senderGroup = msp.getGroup(sender.getUniqueId());
+            Group receiverGroup = msp.getGroup(receiver.getUniqueId());
+
             format = formator.colorize(format
                     .replace("%sender_nickname%", sender.getDisplayName())
                     .replace("%receiver_nickname%", receiver.getDisplayName())
                     .replace("%sender_realname%", sender.getName())
                     .replace("%receiver_realname%", receiver.getName())
-                    .replace("%sender_prefix%", sP)
-                    .replace("%sender_suffix%", sS)
-                    .replace("%receiver_prefix%", rP)
-                    .replace("%receiver_suffix%", rS)
+                    .replace("%sender_prefix%", senderGroup.getPrefix() != null ? senderGroup.getPrefix() : "")
+                    .replace("%sender_suffix%", senderGroup.getSuffix() != null ? senderGroup.getSuffix() : "")
+                    .replace("%receiver_prefix%", receiverGroup.getPrefix() != null ? receiverGroup.getPrefix() : "")
+                    .replace("%receiver_suffix%", receiverGroup.getSuffix() != null ? receiverGroup.getSuffix() : "")
             );
             if (sender.hasPermission("masuitechat.chat.colors")) {
                 format = formator.colorize(format.replace("%message%", msg));
