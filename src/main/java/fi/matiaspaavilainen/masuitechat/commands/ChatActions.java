@@ -50,7 +50,7 @@ public class ChatActions extends Command implements Listener {
 
     private TextComponent action(String p, String cmd) {
         String player = cmd.replace("%player%", p);
-        String format = new Configuration().load(null,"chat.yml").getString("formats.actions");
+        String format = new Configuration().load("chat","chat.yml").getString("formats.actions");
         format = formator.colorize(format.replace("%action%", cmd).replace("%player%", p));
         TextComponent command = new TextComponent(format);
         command.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, player));
