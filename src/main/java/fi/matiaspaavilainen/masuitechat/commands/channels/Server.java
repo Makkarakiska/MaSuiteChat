@@ -10,7 +10,7 @@ import net.md_5.bungee.api.plugin.Command;
 
 public class Server extends Command {
     public Server() {
-        super("serverchat", "masuitechat.channel.server", "server", "s", "serverchannel");
+        super("serverchat", "masuitechat.channel.server", "s", "serverchannel");
     }
 
     @Override

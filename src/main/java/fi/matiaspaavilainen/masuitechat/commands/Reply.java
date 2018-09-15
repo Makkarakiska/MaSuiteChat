@@ -29,7 +29,7 @@ public class Reply extends Command {
                     msg.append(args[i]).append(" ");
                 }
 
-                String format = config.load(null, "chat.yml").getString("formats.private");
+                String format = config.load("chat", "chat.yml").getString("formats.private");
                 format = formator.colorize(format
                         .replace("%sender_nickname%", p.getDisplayName())
                         .replace("%receiver_nickname%", receiver.getDisplayName())
