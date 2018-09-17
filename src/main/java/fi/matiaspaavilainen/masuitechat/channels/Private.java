@@ -17,12 +17,23 @@ public class Private {
         Configuration config = new Configuration();
         Formator formator = new Formator();
         if (receiver != null) {
-            String format = config.load("chat","chat.yml").getString("formats.private");
+            String senderFormat = config.load("chat", "chat.yml").getString("formats.private.sender");
+            String receiverFormat = config.load("chat", "chat.yml").getString("formats.private.receiver");
             MaSuitePlayer msp = new MaSuitePlayer();
             Group senderGroup = msp.getGroup(sender.getUniqueId());
             Group receiverGroup = msp.getGroup(receiver.getUniqueId());
 
-            format = formator.colorize(format
+            senderFormat = formator.colorize(senderFormat
+                    .replace("%sender_nickname%", sender.getDisplayName())
+                    .replace("%receiver_nickname%", receiver.getDisplayName())
+                    .replace("%sender_realname%", sender.getName())
+                    .replace("%receiver_realname%", receiver.getName())
+                    .replace("%sender_prefix%", senderGroup.getPrefix() != null ? senderGroup.getPrefix() : "")
+                    .replace("%sender_suffix%", senderGroup.getSuffix() != null ? senderGroup.getSuffix() : "")
+                    .replace("%receiver_prefix%", receiverGroup.getPrefix() != null ? receiverGroup.getPrefix() : "")
+                    .replace("%receiver_suffix%", receiverGroup.getSuffix() != null ? receiverGroup.getSuffix() : "")
+            );
+            receiverFormat = formator.colorize(receiverFormat
                     .replace("%sender_nickname%", sender.getDisplayName())
                     .replace("%receiver_nickname%", receiver.getDisplayName())
                     .replace("%sender_realname%", sender.getName())
@@ -33,14 +44,14 @@ public class Private {
                     .replace("%receiver_suffix%", receiverGroup.getSuffix() != null ? receiverGroup.getSuffix() : "")
             );
             if (sender.hasPermission("masuitechat.chat.colors")) {
-                format = formator.colorize(format.replace("%message%", msg));
+                senderFormat = formator.colorize(senderFormat.replace("%message%", msg.toString()));
+                receiverFormat = formator.colorize(receiverFormat.replace("%message%", msg.toString()));
             } else {
-                format = format.replace("%message%", msg);
+                senderFormat = senderFormat.replace("%message%", msg);
+                receiverFormat = receiverFormat.replace("%message%", msg);
             }
-
-            TextComponent message = new TextComponent(format);
-            sender.sendMessage(message);
-            receiver.sendMessage(message);
+            sender.sendMessage(new TextComponent(senderFormat));
+            receiver.sendMessage(new TextComponent(receiverFormat));
             conversations.put(receiver.getUniqueId(), sender.getUniqueId());
             conversations.put(sender.getUniqueId(), receiver.getUniqueId());
         } else {

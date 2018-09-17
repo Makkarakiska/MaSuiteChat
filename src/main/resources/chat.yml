@@ -6,7 +6,9 @@ formats:
   global: "&7%server% %prefix% %realname% &6>&r %message%"
   server: "&fServer %prefix% %realname% &6>&r %message%"
   local: "&6Local %prefix% %realname% &6>&r %message%"
-  private : "%sender_prefix% %sender_realname% %sender_suffix%&8-> %receiver_prefix% %receiver_realname% %receiver_suffix%&6>&r %message%"
+  private:
+    sender: "%sender_prefix% %sender_realname% %sender_suffix%&8-> %receiver_prefix% %receiver_realname% %receiver_suffix%&6>&r %message%"
+    receiver: "%sender_prefix% %sender_realname% %sender_suffix%&8-> %receiver_prefix% %receiver_realname% %receiver_suffix%&6>&r %message%"
   actions: "    &8> &7 %action%" #%action% will be replaced with actions from actions.yml
 #Channels will be auto-generated
 channels:
