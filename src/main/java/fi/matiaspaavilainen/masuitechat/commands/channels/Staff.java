@@ -9,8 +9,8 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 
 public class Staff extends Command {
-    public Staff() {
-        super("staffchat", "masuitechat.channel.staff", "ac", "a", "adminchat", "admin");
+    public Staff(String... aliases) {
+        super("staffchat", "masuitechat.channel.staff", aliases);
     }
 
     @Override

@@ -1,0 +1,26 @@
+channels:
+  staff:
+    - sc
+    - ac
+    - a
+    - adminchat
+    - admin
+    - staff
+  global:
+    - global
+    - g
+    - globalchannel
+  server:
+    - s
+    - serverchannel
+  local:
+    - local
+    - l
+    - localchannel
+  private:
+    - msg
+    - tell
+    - whisper
+    - w
+  reply:
+    - reply

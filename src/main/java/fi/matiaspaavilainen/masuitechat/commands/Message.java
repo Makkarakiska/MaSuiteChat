@@ -10,8 +10,8 @@ import net.md_5.bungee.api.plugin.Command;
 
 
 public class Message extends Command {
-    public Message() {
-        super("msg", "masuitechat.channel.private", "msg", "tell", "whisper", "w");
+    public Message(String... aliases) {
+        super("msg", "masuitechat.channel.private", aliases);
     }
 
     @Override

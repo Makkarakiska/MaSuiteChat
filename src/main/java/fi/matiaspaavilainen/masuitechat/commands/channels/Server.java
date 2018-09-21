@@ -9,8 +9,8 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 
 public class Server extends Command {
-    public Server() {
-        super("serverchat", "masuitechat.channel.server", "s", "serverchannel");
+    public Server(String... aliases) {
+        super("serverchat", "masuitechat.channel.server", aliases);
     }
 
     @Override

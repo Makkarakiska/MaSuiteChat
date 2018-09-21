@@ -13,8 +13,8 @@ import net.md_5.bungee.api.plugin.Command;
 
 public class Reply extends Command {
 
-    public Reply() {
-        super("r", "", "reply");
+    public Reply(String... aliases) {
+        super("r", "", aliases);
     }
 
     @Override

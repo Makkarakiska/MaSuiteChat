@@ -11,8 +11,8 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 
 public class Local extends Command {
-    public Local() {
-        super("localchat", "masuitechat.channel.local", "local", "l", "localchannel");
+    public Local(String... aliases) {
+        super("localchat", "masuitechat.channel.local", aliases);
     }
 
     @Override

@@ -40,6 +40,7 @@ public class MaSuiteChat extends Plugin implements Listener {
 
         // Create configs
         config.create(this, "chat", "actions.yml");
+        config.create(this, "chat", "aliases.yml");
         config.create(this, "chat", "messages.yml");
         config.create(this, "chat", "chat.yml");
         config.create(this, "chat", "syntax.yml");
@@ -48,15 +49,15 @@ public class MaSuiteChat extends Plugin implements Listener {
         getProxy().getPluginManager().registerCommand(this, new ChatActions());
 
         // Private messaging
-        getProxy().getPluginManager().registerCommand(this, new Message());
-        getProxy().getPluginManager().registerCommand(this, new Reply());
+        getProxy().getPluginManager().registerCommand(this, new Message(config.load("chat", "aliases.yml").getStringList("channels.private").toArray(new String[0])));
+        getProxy().getPluginManager().registerCommand(this, new Reply(config.load("chat", "aliases.yml").getStringList("channels.reply").toArray(new String[0])));
 
 
-        //Commannds
-        getProxy().getPluginManager().registerCommand(this, new fi.matiaspaavilainen.masuitechat.commands.channels.Staff());
-        getProxy().getPluginManager().registerCommand(this, new fi.matiaspaavilainen.masuitechat.commands.channels.Global());
-        getProxy().getPluginManager().registerCommand(this, new fi.matiaspaavilainen.masuitechat.commands.channels.Server());
-        getProxy().getPluginManager().registerCommand(this, new fi.matiaspaavilainen.masuitechat.commands.channels.Local());
+        //Commands
+        getProxy().getPluginManager().registerCommand(this, new fi.matiaspaavilainen.masuitechat.commands.channels.Staff(config.load("chat", "aliases.yml").getStringList("channels.staff").toArray(new String[0])));
+        getProxy().getPluginManager().registerCommand(this, new fi.matiaspaavilainen.masuitechat.commands.channels.Global(config.load("chat", "aliases.yml").getStringList("channels.global").toArray(new String[0])));
+        getProxy().getPluginManager().registerCommand(this, new fi.matiaspaavilainen.masuitechat.commands.channels.Server(config.load("chat", "aliases.yml").getStringList("channels.server").toArray(new String[0])));
+        getProxy().getPluginManager().registerCommand(this, new fi.matiaspaavilainen.masuitechat.commands.channels.Local(config.load("chat", "aliases.yml").getStringList("channels.local").toArray(new String[0])));
 
 
         // Load actions, servers and channels
