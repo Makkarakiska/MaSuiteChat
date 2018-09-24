@@ -9,7 +9,7 @@ public class Staff {
     public static void sendMessage(ProxiedPlayer p, String msg) {
         TextComponent message = new TextComponent(Utilities.chatFormat(p, msg, "staff"));
         for (ProxiedPlayer players : ProxyServer.getInstance().getPlayers()) {
-            if (players.hasPermission("masuitechat.channel.staff")) players.sendMessage(message);
+            if (players.hasPermission("masuitechat.channel.staff")) players.sendMessage(message.toLegacyText());
         }
 
     }
