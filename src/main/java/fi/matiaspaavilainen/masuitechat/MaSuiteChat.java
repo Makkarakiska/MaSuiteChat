@@ -3,9 +3,7 @@ package fi.matiaspaavilainen.masuitechat;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import fi.matiaspaavilainen.masuitechat.channels.*;
-import fi.matiaspaavilainen.masuitechat.commands.ChatActions;
-import fi.matiaspaavilainen.masuitechat.commands.Message;
-import fi.matiaspaavilainen.masuitechat.commands.Reply;
+import fi.matiaspaavilainen.masuitechat.commands.*;
 import fi.matiaspaavilainen.masuitechat.managers.ConfigManager;
 import fi.matiaspaavilainen.masuitechat.managers.ServerManager;
 import fi.matiaspaavilainen.masuitecore.Updator;
@@ -58,7 +56,8 @@ public class MaSuiteChat extends Plugin implements Listener {
         getProxy().getPluginManager().registerCommand(this, new fi.matiaspaavilainen.masuitechat.commands.channels.Global(config.load("chat", "aliases.yml").getStringList("channels.global").toArray(new String[0])));
         getProxy().getPluginManager().registerCommand(this, new fi.matiaspaavilainen.masuitechat.commands.channels.Server(config.load("chat", "aliases.yml").getStringList("channels.server").toArray(new String[0])));
         getProxy().getPluginManager().registerCommand(this, new fi.matiaspaavilainen.masuitechat.commands.channels.Local(config.load("chat", "aliases.yml").getStringList("channels.local").toArray(new String[0])));
-
+        getProxy().getPluginManager().registerCommand(this, new Nick(config.load("chat", "aliases.yml").getStringList("commands.nick").toArray(new String[0])));
+        getProxy().getPluginManager().registerCommand(this, new ResetNick(config.load("chat", "aliases.yml").getStringList("commands.nick").toArray(new String[0])));
 
         // Load actions, servers and channels
         ConfigManager.getActions();

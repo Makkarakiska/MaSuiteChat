@@ -3,6 +3,7 @@ available-player-commands: " &8* &bAvailable commands" # masuitechat.action.play
 available-staff-commands: " &8* &cAvailable staff commands" # masuitechat.action.admin
 message-hover-actions: "&7Message sent at &9%timestamp%. \n &cClick for chat actions!"
 no-player-to-reply: "&cNo players to reply"
+nickname-changed: "&aNick name changed to %nickname%"
 channel-changed:
   staff: "&aChanged to Staff channel"
   global: "&aChanged to Global channel"

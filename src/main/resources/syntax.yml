@@ -1,1 +1,4 @@
 private-message: "&cCorrect syntax: /msg <player> <message>"
+nickname:
+  set: "&cCorrect syntax: /nick <nick> (<player>)"
+  reset: "&Correct syntax /resetnick (<player>)"

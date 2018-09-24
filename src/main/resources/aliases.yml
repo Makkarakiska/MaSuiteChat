@@ -24,3 +24,8 @@ channels:
     - w
   reply:
     - reply
+commands:
+  nick:
+    - nickname
+  resetnick:
+    - resetnickname
