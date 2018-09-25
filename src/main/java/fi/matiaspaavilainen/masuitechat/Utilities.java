@@ -26,10 +26,10 @@ public class Utilities {
         Group group = msp.getGroup(p.getUniqueId());
         format = formator.colorize(
                 format.replace("%server%", server)
-                        .replace("%prefix%", group.getPrefix() != null ? group.getPrefix() : "")
+                        .replace("%prefix%", group != null ? group.getPrefix() : "")
                         .replace("%nickname%", p.getDisplayName())
                         .replace("%realname%", p.getName())
-                        .replace("%suffix%", group.getSuffix()!= null ? group.getSuffix() : ""));
+                        .replace("%suffix%", group != null ? group.getSuffix() : ""));
         if (p.hasPermission("masuitechat.chat.colors")) {
             format = formator.colorize(format.replace("%message%", msg));
         } else {
