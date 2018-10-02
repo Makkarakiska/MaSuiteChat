@@ -57,7 +57,7 @@ public class MaSuiteChat extends Plugin implements Listener {
         getProxy().getPluginManager().registerCommand(this, new fi.matiaspaavilainen.masuitechat.commands.channels.Server(config.load("chat", "aliases.yml").getStringList("channels.server").toArray(new String[0])));
         getProxy().getPluginManager().registerCommand(this, new fi.matiaspaavilainen.masuitechat.commands.channels.Local(config.load("chat", "aliases.yml").getStringList("channels.local").toArray(new String[0])));
         getProxy().getPluginManager().registerCommand(this, new Nick(config.load("chat", "aliases.yml").getStringList("commands.nick").toArray(new String[0])));
-        getProxy().getPluginManager().registerCommand(this, new ResetNick(config.load("chat", "aliases.yml").getStringList("commands.nick").toArray(new String[0])));
+        getProxy().getPluginManager().registerCommand(this, new ResetNick(config.load("chat", "aliases.yml").getStringList("commands.resetnick").toArray(new String[0])));
 
         // Load actions, servers and channels
         ConfigManager.getActions();
