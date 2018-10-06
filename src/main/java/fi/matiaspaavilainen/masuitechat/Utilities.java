@@ -7,10 +7,6 @@ import fi.matiaspaavilainen.masuitecore.managers.Group;
 import fi.matiaspaavilainen.masuitecore.managers.MaSuitePlayer;
 import net.md_5.bungee.api.chat.*;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
-import net.md_5.bungee.chat.ComponentSerializer;
-import net.md_5.bungee.protocol.packet.Chat;
-
-import java.util.Arrays;
 
 public class Utilities {
 
@@ -26,10 +22,10 @@ public class Utilities {
         Group group = msp.getGroup(p.getUniqueId());
         format = formator.colorize(
                 format.replace("%server%", server)
-                        .replace("%prefix%", group != null ? group.getPrefix() : "")
+                        .replace("%prefix%", group.getPrefix() != null ? group.getPrefix() : "")
                         .replace("%nickname%", p.getDisplayName())
                         .replace("%realname%", p.getName())
-                        .replace("%suffix%", group != null ? group.getSuffix() : ""));
+                        .replace("%suffix%", group.getSuffix() != null ? group.getSuffix() : ""));
         if (p.hasPermission("masuitechat.chat.colors")) {
             format = formator.colorize(format.replace("%message%", msg));
         } else {

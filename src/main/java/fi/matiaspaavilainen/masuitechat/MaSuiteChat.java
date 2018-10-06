@@ -4,7 +4,9 @@ import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import fi.matiaspaavilainen.masuitechat.channels.*;
 import fi.matiaspaavilainen.masuitechat.commands.*;
+import fi.matiaspaavilainen.masuitechat.database.Database;
 import fi.matiaspaavilainen.masuitechat.managers.ConfigManager;
+import fi.matiaspaavilainen.masuitechat.managers.MailManager;
 import fi.matiaspaavilainen.masuitechat.managers.ServerManager;
 import fi.matiaspaavilainen.masuitecore.Updator;
 import fi.matiaspaavilainen.masuitecore.config.Configuration;
@@ -29,12 +31,24 @@ public class MaSuiteChat extends Plugin implements Listener {
     public static List<String> staffActions = new ArrayList<>();
     public static HashMap<UUID, String> players = new HashMap<>();
     public static HashMap<String, Channel> channels = new HashMap<>();
+    public static Database db = new Database();
 
     @Override
     public void onEnable() {
         super.onEnable();
         Configuration config = new Configuration();
         getProxy().getPluginManager().registerListener(this, this);
+
+        // Database
+        db.connect();
+        db.createTable("mail", "(" +
+                "id INT(10) UNSIGNED PRIMARY KEY AUTO_INCREMENT, " +
+                "sender VARCHAR(36) NOT NULL, " +
+                "receiver VARCHAR(36) NOT NULL, " +
+                "message LONGTEXT NOT NULL, " +
+                "seen TINYINT(1) NOT NULL DEFAULT '0', " +
+                "timestamp BIGINT(16) NOT NULL" +
+                ");");
 
         // Create configs
         config.create(this, "chat", "actions.yml");
@@ -66,6 +80,12 @@ public class MaSuiteChat extends Plugin implements Listener {
         new Updator().checkVersion(this.getDescription(), "60039");
     }
 
+    @Override
+    public void onDisable() {
+        super.onDisable();
+        db.hikari.close();
+    }
+
     @EventHandler
     public void onJoin(PostLoginEvent e) {
         ProxiedPlayer p = e.getPlayer();
@@ -92,35 +112,42 @@ public class MaSuiteChat extends Plugin implements Listener {
             DataInputStream in = new DataInputStream(new ByteArrayInputStream(e.getData()));
             String subchannel = in.readUTF();
             if (subchannel.equals("MaSuiteChat")) {
-                ProxiedPlayer p = ProxyServer.getInstance().getPlayer(in.readUTF());
-                if (p == null) {
-                    return;
+                String childchannel = in.readUTF();
+                if (childchannel.equals("Chat")) {
+                    ProxiedPlayer p = ProxyServer.getInstance().getPlayer(in.readUTF());
+                    if (p == null) {
+                        return;
+                    }
+                    switch (players.get(p.getUniqueId())) {
+                        case ("global"):
+                            Global.sendMessage(p, in.readUTF());
+                            break;
+                        case ("server"):
+                            Server.sendMessage(p, in.readUTF());
+                            break;
+                        case ("staff"):
+                            Staff.sendMessage(p, in.readUTF());
+                            break;
+                        case ("local"):
+                            String msg = in.readUTF();
+
+                            String server = p.getServer().getInfo().getName().toLowerCase();
+                            int range = config.load("chat", "chat.yml").getInt("channels." + server + ".localRadius");
+
+                            ByteArrayDataOutput output = ByteStreams.newDataOutput();
+                            output.writeUTF("LocalChat");
+                            output.writeUTF(Local.sendMessage(p, msg));
+                            output.writeInt(range);
+                            p.getServer().sendData("BungeeCord", output.toByteArray());
+                            break;
+                        default:
+                            System.out.println("Player " + p.getName() + " does not have channel for some reason! Please relog!");
+                            break;
+                    }
                 }
-                switch (players.get(p.getUniqueId())) {
-                    case ("global"):
-                        Global.sendMessage(p, in.readUTF());
-                        break;
-                    case ("server"):
-                        Server.sendMessage(p, in.readUTF());
-                        break;
-                    case ("staff"):
-                        Staff.sendMessage(p, in.readUTF());
-                        break;
-                    case ("local"):
-                        String msg = in.readUTF();
-
-                        String server = p.getServer().getInfo().getName().toLowerCase();
-                        int range = config.load("chat", "chat.yml").getInt("channels." + server + ".localRadius");
-
-                        ByteArrayDataOutput output = ByteStreams.newDataOutput();
-                        output.writeUTF("LocalChat");
-                        output.writeUTF(Local.sendMessage(p, msg));
-                        output.writeInt(range);
-                        p.getServer().sendData("BungeeCord", output.toByteArray());
-                        break;
-                    default:
-                        System.out.println("Player " + p.getName() + " does not have channel for some reason! Please relog!");
-                        break;
+                if (childchannel.equals("Mail")) {
+                    MailManager mm = new MailManager();
+                    mm.handle(in.readUTF(), in.readUTF(), in.readUTF());
                 }
             }
         }
