@@ -1,12 +1,16 @@
 package fi.matiaspaavilainen.masuitechat.commands;
 
 import fi.matiaspaavilainen.masuitechat.channels.Private;
+import fi.matiaspaavilainen.masuitechat.utils.MDChat;
+import fi.matiaspaavilainen.masuitecore.chat.Date;
 import fi.matiaspaavilainen.masuitecore.chat.Formator;
 import fi.matiaspaavilainen.masuitecore.config.Configuration;
 import fi.matiaspaavilainen.masuitecore.managers.Group;
 import fi.matiaspaavilainen.masuitecore.managers.MaSuitePlayer;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
@@ -64,8 +68,13 @@ public class Reply extends Command {
                     senderFormat = senderFormat.replace("%message%", msg);
                     receiverFormat = receiverFormat.replace("%message%", msg);
                 }
-                sender.sendMessage(new TextComponent(senderFormat));
-                receiver.sendMessage(new TextComponent(receiverFormat));
+
+                HoverEvent he = new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                        new ComponentBuilder(formator.colorize(config.load("chat", "messages.yml")
+                                .getString("message-hover-actions")
+                                .replace("%timestamp%", new Date().getDate(new java.util.Date())))).create());
+                sender.sendMessage(new ComponentBuilder(MDChat.getMessageFromString(senderFormat)).event(he).create());
+                receiver.sendMessage(new ComponentBuilder(MDChat.getMessageFromString(receiverFormat)).event(he).create());
             } else{
                 sender.sendMessage(new TextComponent(new Formator().colorize(config.load(null,"messages.yml").getString("player-not-online"))));
             }
