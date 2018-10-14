@@ -13,12 +13,7 @@ public class MailManager {
             return;
         }
 
-        MaSuitePlayer receiver = new MaSuitePlayer();
-        receiver = receiver.find(r);
-        if (receiver.getUUID() == null) {
-            // Message: Player not found from database
-            return;
-        }
+        MaSuitePlayer receiver = new MaSuitePlayer().find(r);
         Mail mail = new Mail(sender.getUniqueId(), receiver.getUUID(), message, System.currentTimeMillis() / 1000);
         mail.send(mail);
     }
