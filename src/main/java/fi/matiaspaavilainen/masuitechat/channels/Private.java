@@ -1,9 +1,13 @@
 package fi.matiaspaavilainen.masuitechat.channels;
 
+import fi.matiaspaavilainen.masuitechat.utils.MDChat;
+import fi.matiaspaavilainen.masuitecore.chat.Date;
 import fi.matiaspaavilainen.masuitecore.chat.Formator;
 import fi.matiaspaavilainen.masuitecore.config.Configuration;
 import fi.matiaspaavilainen.masuitecore.managers.Group;
 import fi.matiaspaavilainen.masuitecore.managers.MaSuitePlayer;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
@@ -44,14 +48,19 @@ public class Private {
                     .replace("%receiver_suffix%", receiverGroup.getSuffix() != null ? receiverGroup.getSuffix() : "")
             );
             if (sender.hasPermission("masuitechat.chat.colors")) {
-                senderFormat = formator.colorize(senderFormat.replace("%message%", msg.toString()));
-                receiverFormat = formator.colorize(receiverFormat.replace("%message%", msg.toString()));
+                senderFormat = formator.colorize(senderFormat.replace("%message%", msg));
+                receiverFormat = formator.colorize(receiverFormat.replace("%message%", msg));
             } else {
                 senderFormat = senderFormat.replace("%message%", msg);
                 receiverFormat = receiverFormat.replace("%message%", msg);
             }
-            sender.sendMessage(new TextComponent(senderFormat));
-            receiver.sendMessage(new TextComponent(receiverFormat));
+
+            HoverEvent he = new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                    new ComponentBuilder(formator.colorize(config.load("chat", "messages.yml")
+                            .getString("message-hover-actions")
+                            .replace("%timestamp%", new Date().getDate(new java.util.Date())))).create());
+            sender.sendMessage(new ComponentBuilder(MDChat.getMessageFromString(senderFormat)).event(he).create());
+            receiver.sendMessage(new ComponentBuilder(MDChat.getMessageFromString(receiverFormat)).event(he).create());
             conversations.put(receiver.getUniqueId(), sender.getUniqueId());
             conversations.put(sender.getUniqueId(), receiver.getUniqueId());
         } else {

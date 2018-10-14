@@ -7,9 +7,8 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 public class Staff {
     public static void sendMessage(ProxiedPlayer p, String msg) {
-        TextComponent message = new TextComponent(Utilities.chatFormat(p, msg, "staff"));
         for (ProxiedPlayer players : ProxyServer.getInstance().getPlayers()) {
-            if (players.hasPermission("masuitechat.channel.staff")) players.sendMessage(message.toLegacyText());
+            if (players.hasPermission("masuitechat.channel.staff")) players.sendMessage(Utilities.chatFormat(p, msg, "staff"));
         }
 
     }

@@ -6,6 +6,6 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 public class Global {
     public static void sendMessage(ProxiedPlayer p, String msg) {
-        ProxyServer.getInstance().broadcast(Utilities.chatFormat(p, msg, "global").toLegacyText());
+        ProxyServer.getInstance().broadcast(Utilities.chatFormat(p, msg, "global"));
     }
 }

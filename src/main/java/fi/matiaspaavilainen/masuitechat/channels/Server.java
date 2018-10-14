@@ -7,9 +7,8 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 public class Server {
     public static void sendMessage(ProxiedPlayer p, String msg) {
-        TextComponent message = new TextComponent(Utilities.chatFormat(p, msg,"server"));
         for (ProxiedPlayer players : ProxyServer.getInstance().getServerInfo(p.getServer().getInfo().getName()).getPlayers()) {
-            players.sendMessage(message.toLegacyText());
+            players.sendMessage(Utilities.chatFormat(p, msg,"server"));
         }
     }
 }
