@@ -6,7 +6,7 @@
 
     <groupId>fi.matiaspaavilainen</groupId>
     <artifactId>MaSuiteChat</artifactId>
-    <version>1.3.8</version>
+    <version>1.4</version>
     <build>
         <finalName>MaSuiteChat</finalName>
         <plugins>
@@ -63,7 +63,7 @@
         <dependency>
             <groupId>com.github.masagameplay</groupId>
             <artifactId>masuitecore</artifactId>
-            <version>b6d3df44c4</version>
+            <version>77771c569b</version>
         </dependency>
         <dependency>
             <groupId>com.zaxxer</groupId>
