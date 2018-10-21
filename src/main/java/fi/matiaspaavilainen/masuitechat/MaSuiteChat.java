@@ -40,8 +40,8 @@ public class MaSuiteChat extends Plugin implements Listener {
         getProxy().getPluginManager().registerListener(this, this);
 
         // Database
-        db.connect();
-        db.createTable("mail", "(" +
+        // db.connect();
+        /* db.createTable("mail", "(" +
                 "id INT(10) UNSIGNED PRIMARY KEY AUTO_INCREMENT, " +
                 "sender VARCHAR(36) NOT NULL, " +
                 "receiver VARCHAR(36) NOT NULL, " +
@@ -49,6 +49,7 @@ public class MaSuiteChat extends Plugin implements Listener {
                 "seen TINYINT(1) NOT NULL DEFAULT '0', " +
                 "timestamp BIGINT(16) NOT NULL" +
                 ");");
+                */
 
         // Create configs
         config.create(this, "chat", "actions.yml");
@@ -83,7 +84,7 @@ public class MaSuiteChat extends Plugin implements Listener {
     @Override
     public void onDisable() {
         super.onDisable();
-        db.hikari.close();
+        //db.hikari.close();
     }
 
     @EventHandler
@@ -146,8 +147,17 @@ public class MaSuiteChat extends Plugin implements Listener {
                     }
                 }
                 if (childchannel.equals("Mail")) {
+                    String superchildchannel = in.readUTF();
                     MailManager mm = new MailManager();
-                    mm.handle(in.readUTF(), in.readUTF(), in.readUTF());
+                    switch (superchildchannel) {
+                        case ("Send"):
+                            mm.send(in.readUTF(), in.readUTF(), in.readUTF());
+                            break;
+                        case ("Read"):
+                            mm.read(in.readUTF());
+                            break;
+                    }
+
                 }
             }
         }

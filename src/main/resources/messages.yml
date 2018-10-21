@@ -9,3 +9,9 @@ channel-changed:
   global: "&aChanged to Global channel"
   server: "&aChanged to Server channel"
   local: "&aChanged to Local channel"
+
+#Mail
+mail:
+  player-not-found: "&cPlayer not found."
+  sent: "&7Mail sent to &b%player%"
+  received: "&7Mail received from &b%player%"

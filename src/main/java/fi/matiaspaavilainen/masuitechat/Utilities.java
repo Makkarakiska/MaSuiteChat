@@ -6,7 +6,9 @@ import fi.matiaspaavilainen.masuitecore.chat.Formator;
 import fi.matiaspaavilainen.masuitecore.config.Configuration;
 import fi.matiaspaavilainen.masuitecore.managers.Group;
 import fi.matiaspaavilainen.masuitecore.managers.MaSuitePlayer;
-import net.md_5.bungee.api.chat.*;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 public class Utilities {
@@ -16,11 +18,10 @@ public class Utilities {
         Formator formator = new Formator();
         Configuration config = new Configuration();
 
-        MaSuitePlayer msp = new MaSuitePlayer();
         String format = config.load("chat", "chat.yml").getString("formats." + channel);
         String server = config.load("chat", "chat.yml").getString("channels." + p.getServer().getInfo().getName().toLowerCase() + ".prefix");
 
-        Group group = msp.getGroup(p.getUniqueId());
+        Group group = new MaSuitePlayer().find(p.getUniqueId()).getGroup();
 
 
         format = formator.colorize(
