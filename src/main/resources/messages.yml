@@ -1,7 +1,5 @@
 # Basic messages
-available-player-commands: " &8* &bAvailable commands" # masuitechat.action.player
-available-staff-commands: " &8* &cAvailable staff commands" # masuitechat.action.admin
-message-hover-actions: "&7Message sent at &9%timestamp%. \n &cClick for chat actions!"
+message-hover-actions: "&7Message sent at &9%timestamp%."
 no-player-to-reply: "&cNo players to reply"
 nickname-changed: "&aNick name changed to %nickname%"
 channel-changed:
@@ -15,3 +13,4 @@ mail:
   player-not-found: "&cPlayer not found."
   sent: "&7Mail sent to &b%player%"
   received: "&7Mail received from &b%player%"
+  empty: "&cYour mailbox is empty!"

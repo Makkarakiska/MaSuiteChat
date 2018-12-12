@@ -20,6 +20,7 @@ public class Mail {
     private String tablePrefix = config.load(null, "config.yml").getString("database.table-prefix");
 
     // Info
+    private int id;
     private UUID sender;
     private UUID receiver;
     private String message;
@@ -37,17 +38,43 @@ public class Mail {
     }
 
     public boolean send() {
-        String insert = "INSERT INTO " + tablePrefix +
-                "mail (sender, receiver, message, seen, timestamp) VALUES (?, ?, ?, ?, ?) ;";
         try {
             connection = db.hikari.getConnection();
-            statement = connection.prepareStatement(insert);
+            statement = connection.prepareStatement("INSERT INTO " + tablePrefix + "mail (sender, receiver, message, seen, timestamp) VALUES (?, ?, ?, ?, ?);");
             statement.setString(1, getSender().toString());
             statement.setString(2, getReceiver().toString());
             statement.setString(3, getMessage());
             statement.setBoolean(4, isSeen());
             statement.setLong(5, getTimestamp());
             statement.execute();
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                }
+            }
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public boolean read() {
+        try {
+            connection = db.hikari.getConnection();
+            statement = connection.prepareStatement("UPDATE " + tablePrefix + "mail SET seen = true WHERE id = ?;");
+            statement.setInt(1, getId());
+            statement.executeUpdate();
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -82,6 +109,7 @@ public class Mail {
             while (rs.next()) {
                 if (!rs.getBoolean("seen")) {
                     Mail mail = new Mail();
+                    mail.setId(rs.getInt("id"));
                     mail.setSender(UUID.fromString(rs.getString("sender")));
                     mail.setReceiver(UUID.fromString(rs.getString("receiver")));
                     mail.setMessage(rs.getString("message"));
@@ -155,5 +183,13 @@ public class Mail {
 
     public void setTimestamp(Long timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

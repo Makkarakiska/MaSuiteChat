@@ -12,6 +12,27 @@
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <relocations>
+                        <relocation>
+                            <pattern>com.zaxxer.hikari</pattern>
+                            <shadedPattern>fi.matiaspaavilainen.masuitechat</shadedPattern>
+                        </relocation>
+                    </relocations>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.6.1</version>
                 <configuration>
@@ -30,6 +51,10 @@
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
         </repository>
+        <repository>
+            <id>bungeeperms-repo</id>
+            <url>http://repo.wea-ondara.net/repository/public/</url>
+        </repository>
     </repositories>
     <dependencies>
         <dependency>
@@ -45,6 +70,21 @@
             <version>0c6d30b6a1</version>
             <scope>provided</scope>
         </dependency>
+
+        <!-- Permission plugins -->
+        <dependency>
+            <groupId>me.lucko.luckperms</groupId>
+            <artifactId>luckperms-api</artifactId>
+            <version>4.3</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.alpenblock</groupId>
+            <artifactId>BungeePerms</artifactId>
+            <version>3.0-dev-47</version>
+            <scope>provided</scope>
+        </dependency>
+
         <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>

@@ -1,15 +1,17 @@
 package fi.matiaspaavilainen.masuitechat;
 
-import com.google.common.io.ByteArrayDataOutput;
-import com.google.common.io.ByteStreams;
 import fi.matiaspaavilainen.masuitechat.channels.*;
-import fi.matiaspaavilainen.masuitechat.commands.*;
 import fi.matiaspaavilainen.masuitechat.database.Database;
-import fi.matiaspaavilainen.masuitechat.managers.ConfigManager;
 import fi.matiaspaavilainen.masuitechat.managers.MailManager;
 import fi.matiaspaavilainen.masuitechat.managers.ServerManager;
 import fi.matiaspaavilainen.masuitecore.Updator;
+import fi.matiaspaavilainen.masuitecore.Utils;
+import fi.matiaspaavilainen.masuitecore.chat.Formator;
 import fi.matiaspaavilainen.masuitecore.config.Configuration;
+import fi.matiaspaavilainen.masuitecore.managers.MaSuitePlayer;
+import me.lucko.luckperms.LuckPerms;
+import me.lucko.luckperms.api.LuckPermsApi;
+import net.alpenblock.bungeeperms.BungeePerms;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
@@ -20,18 +22,20 @@ import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.event.EventHandler;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.UUID;
 
 public class MaSuiteChat extends Plugin implements Listener {
 
-    public static List<String> playerActions = new ArrayList<>();
-    public static List<String> staffActions = new ArrayList<>();
     public static HashMap<UUID, String> players = new HashMap<>();
     public static HashMap<String, Channel> channels = new HashMap<>();
     public static Database db = new Database();
+    public static LuckPermsApi luckPermsApi = null;
+    public static BungeePerms bungeePermsApi = null;
+    private Configuration config = new Configuration();
+    private Formator formator = new Formator();
+
+    private Utils utils = new Utils();
 
     @Override
     public void onEnable() {
@@ -40,8 +44,8 @@ public class MaSuiteChat extends Plugin implements Listener {
         getProxy().getPluginManager().registerListener(this, this);
 
         // Database
-        // db.connect();
-        /* db.createTable("mail", "(" +
+        db.connect();
+        db.createTable("mail", "(" +
                 "id INT(10) UNSIGNED PRIMARY KEY AUTO_INCREMENT, " +
                 "sender VARCHAR(36) NOT NULL, " +
                 "receiver VARCHAR(36) NOT NULL, " +
@@ -49,42 +53,31 @@ public class MaSuiteChat extends Plugin implements Listener {
                 "seen TINYINT(1) NOT NULL DEFAULT '0', " +
                 "timestamp BIGINT(16) NOT NULL" +
                 ");");
-                */
 
         // Create configs
-        config.create(this, "chat", "actions.yml");
+        //config.create(this, "chat", "actions.yml");
         config.create(this, "chat", "aliases.yml");
         config.create(this, "chat", "messages.yml");
         config.create(this, "chat", "chat.yml");
         config.create(this, "chat", "syntax.yml");
 
-        // Chat Actions for messages
-        getProxy().getPluginManager().registerCommand(this, new ChatActions());
-
-        // Private messaging
-        getProxy().getPluginManager().registerCommand(this, new Message(config.load("chat", "aliases.yml").getStringList("channels.private").toArray(new String[0])));
-        getProxy().getPluginManager().registerCommand(this, new Reply(config.load("chat", "aliases.yml").getStringList("channels.reply").toArray(new String[0])));
-
-
-        //Commands
-        getProxy().getPluginManager().registerCommand(this, new fi.matiaspaavilainen.masuitechat.commands.channels.Staff(config.load("chat", "aliases.yml").getStringList("channels.staff").toArray(new String[0])));
-        getProxy().getPluginManager().registerCommand(this, new fi.matiaspaavilainen.masuitechat.commands.channels.Global(config.load("chat", "aliases.yml").getStringList("channels.global").toArray(new String[0])));
-        getProxy().getPluginManager().registerCommand(this, new fi.matiaspaavilainen.masuitechat.commands.channels.Server(config.load("chat", "aliases.yml").getStringList("channels.server").toArray(new String[0])));
-        getProxy().getPluginManager().registerCommand(this, new fi.matiaspaavilainen.masuitechat.commands.channels.Local(config.load("chat", "aliases.yml").getStringList("channels.local").toArray(new String[0])));
-        getProxy().getPluginManager().registerCommand(this, new Nick(config.load("chat", "aliases.yml").getStringList("commands.nick").toArray(new String[0])));
-        getProxy().getPluginManager().registerCommand(this, new ResetNick(config.load("chat", "aliases.yml").getStringList("commands.resetnick").toArray(new String[0])));
-
         // Load actions, servers and channels
-        ConfigManager.getActions();
         ServerManager.loadServers();
 
         new Updator().checkVersion(this.getDescription(), "60039");
+
+        if (getProxy().getPluginManager().getPlugin("LuckPerms") != null) {
+            luckPermsApi = LuckPerms.getApi();
+        }
+        if (getProxy().getPluginManager().getPlugin("BungeePerms") != null) {
+            bungeePermsApi = BungeePerms.getInstance();
+        }
     }
 
     @Override
     public void onDisable() {
         super.onDisable();
-        //db.hikari.close();
+        db.hikari.close();
     }
 
     @EventHandler
@@ -103,48 +96,105 @@ public class MaSuiteChat extends Plugin implements Listener {
 
     @Override
     public void onLoad() {
-        super.onLoad();
+        getProxy().getPlayers().forEach(p -> {
+            players.put(p.getUniqueId(), "global");
+            formator.sendMessage(p, config.load("chat", "messages.yml").getString("channel-changed.global"));
+        });
     }
 
     @EventHandler
     public void onPluginMessage(PluginMessageEvent e) throws IOException {
         Configuration config = new Configuration();
+        Local localChannel = new Local(this);
+        Private privateChannel = new Private();
         if (e.getTag().equals("BungeeCord")) {
             DataInputStream in = new DataInputStream(new ByteArrayInputStream(e.getData()));
             String subchannel = in.readUTF();
             if (subchannel.equals("MaSuiteChat")) {
                 String childchannel = in.readUTF();
                 if (childchannel.equals("Chat")) {
-                    ProxiedPlayer p = ProxyServer.getInstance().getPlayer(in.readUTF());
+                    ProxiedPlayer p = ProxyServer.getInstance().getPlayer(UUID.fromString(in.readUTF()));
                     if (p == null) {
                         return;
                     }
-                    switch (players.get(p.getUniqueId())) {
-                        case ("global"):
-                            Global.sendMessage(p, in.readUTF());
-                            break;
-                        case ("server"):
-                            Server.sendMessage(p, in.readUTF());
-                            break;
-                        case ("staff"):
-                            Staff.sendMessage(p, in.readUTF());
-                            break;
-                        case ("local"):
-                            String msg = in.readUTF();
-
-                            String server = p.getServer().getInfo().getName().toLowerCase();
-                            int range = config.load("chat", "chat.yml").getInt("channels." + server + ".localRadius");
-
-                            ByteArrayDataOutput output = ByteStreams.newDataOutput();
-                            output.writeUTF("LocalChat");
-                            output.writeUTF(Local.sendMessage(p, msg));
-                            output.writeInt(range);
-                            p.getServer().sendData("BungeeCord", output.toByteArray());
-                            break;
-                        default:
-                            System.out.println("Player " + p.getName() + " does not have channel for some reason! Please relog!");
-                            break;
+                    if (players.containsKey(p.getUniqueId())) {
+                        switch (players.get(p.getUniqueId())) {
+                            case ("staff"):
+                                Staff.sendMessage(p, in.readUTF());
+                                break;
+                            case ("global"):
+                                Global.sendMessage(p, in.readUTF());
+                                break;
+                            case ("server"):
+                                Server.sendMessage(p, in.readUTF());
+                                break;
+                            case ("local"):
+                                String msg = in.readUTF();
+                                localChannel.send(p, msg);
+                                break;
+                        }
                     }
+                }
+                if (childchannel.equals("ToggleChannel")) {
+                    String channel = in.readUTF();
+                    ProxiedPlayer p = getProxy().getPlayer(UUID.fromString(in.readUTF()));
+                    if (p != null) {
+                        switch (channel) {
+                            case ("staff"):
+                                players.put(p.getUniqueId(), "staff");
+                                formator.sendMessage(p, config.load("chat", "messages.yml").getString("channel-changed.staff"));
+                                break;
+                            case ("global"):
+                                players.put(p.getUniqueId(), "global");
+                                formator.sendMessage(p, config.load("chat", "messages.yml").getString("channel-changed.global"));
+                                break;
+                            case ("server"):
+                                players.put(p.getUniqueId(), "server");
+                                formator.sendMessage(p, config.load("chat", "messages.yml").getString("channel-changed.server"));
+                                break;
+                            case ("local"):
+                                players.put(p.getUniqueId(), "local");
+                                formator.sendMessage(p, config.load("chat", "messages.yml").getString("channel-changed.local"));
+                                break;
+                        }
+                    }
+
+                }
+                if (childchannel.equals("SendMessage")) {
+                    String channel = in.readUTF();
+                    ProxiedPlayer p = getProxy().getPlayer(UUID.fromString(in.readUTF()));
+                    String msg = in.readUTF();
+                    if (p != null) {
+                        switch (channel) {
+                            case ("staff"):
+                                Staff.sendMessage(p, msg);
+                                break;
+                            case ("global"):
+                                Global.sendMessage(p, msg);
+                                break;
+                            case ("server"):
+                                Server.sendMessage(p, msg);
+                                break;
+                            case ("local"):
+                                localChannel.send(p, msg);
+                                break;
+                            case ("private"):
+                                ProxiedPlayer receiver = getProxy().getPlayer(in.readUTF());
+                                if (utils.isOnline(receiver, p)) {
+                                    privateChannel.sendMessage(p, receiver, in.readUTF());
+                                }
+                                break;
+                            case ("reply"):
+                                if (Private.conversations.containsKey(p.getUniqueId())) {
+                                    ProxiedPlayer r = ProxyServer.getInstance().getPlayer(Private.conversations.get(p.getUniqueId()));
+                                    if (utils.isOnline(r, p)) {
+                                        privateChannel.sendMessage(p, r, msg);
+                                    }
+                                }
+                                break;
+                        }
+                    }
+
                 }
                 if (childchannel.equals("Mail")) {
                     String superchildchannel = in.readUTF();
@@ -153,9 +203,40 @@ public class MaSuiteChat extends Plugin implements Listener {
                         case ("Send"):
                             mm.send(in.readUTF(), in.readUTF(), in.readUTF());
                             break;
+                        case ("SendAll"):
+                            mm.sendAll(in.readUTF(), in.readUTF());
+                            break;
                         case ("Read"):
                             mm.read(in.readUTF());
                             break;
+                    }
+
+                }
+
+                if (childchannel.equals("Nick")) {
+                    ProxiedPlayer sender = ProxyServer.getInstance().getPlayer(UUID.fromString(in.readUTF()));
+                    String nick = in.readUTF();
+                    if (utils.isOnline(sender)) {
+                        sender.setDisplayName(nick);
+                        MaSuitePlayer msp = new MaSuitePlayer();
+                        msp = msp.find(sender.getUniqueId());
+                        msp.setNickname(nick);
+                        msp.update(msp);
+                        formator.sendMessage(sender, config.load("chat", "messages.yml").getString("nickname-changed").replace("%nickname%", nick));
+                    }
+                }
+
+                if (childchannel.equals("NickOther")) {
+                    ProxiedPlayer sender = ProxyServer.getInstance().getPlayer(UUID.fromString(in.readUTF()));
+                    ProxiedPlayer target = ProxyServer.getInstance().getPlayer(UUID.fromString(in.readUTF()));
+                    String nick = in.readUTF();
+                    if (utils.isOnline(target, sender)) {
+                        target.setDisplayName(in.readUTF());
+                        MaSuitePlayer msp = new MaSuitePlayer();
+                        msp = msp.find(target.getUniqueId());
+                        msp.setNickname(nick);
+                        msp.update(msp);
+                        formator.sendMessage(sender, config.load("chat", "messages.yml").getString("nickname-changed").replace("%nickname%", nick));
                     }
 
                 }
