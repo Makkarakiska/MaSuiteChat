@@ -163,23 +163,23 @@ public class MaSuiteChat extends Plugin implements Listener {
                 if (childchannel.equals("SendMessage")) {
                     String channel = in.readUTF();
                     ProxiedPlayer p = getProxy().getPlayer(UUID.fromString(in.readUTF()));
-                    String msg = in.readUTF();
+                    String value = in.readUTF();
                     if (p != null) {
                         switch (channel) {
                             case ("staff"):
-                                Staff.sendMessage(p, msg);
+                                Staff.sendMessage(p, value);
                                 break;
                             case ("global"):
-                                Global.sendMessage(p, msg);
+                                Global.sendMessage(p, value);
                                 break;
                             case ("server"):
-                                Server.sendMessage(p, msg);
+                                Server.sendMessage(p, value);
                                 break;
                             case ("local"):
-                                localChannel.send(p, msg);
+                                localChannel.send(p, value);
                                 break;
                             case ("private"):
-                                ProxiedPlayer receiver = getProxy().getPlayer(in.readUTF());
+                                ProxiedPlayer receiver = getProxy().getPlayer(value);
                                 if (utils.isOnline(receiver, p)) {
                                     privateChannel.sendMessage(p, receiver, in.readUTF());
                                 }
@@ -188,7 +188,7 @@ public class MaSuiteChat extends Plugin implements Listener {
                                 if (Private.conversations.containsKey(p.getUniqueId())) {
                                     ProxiedPlayer r = ProxyServer.getInstance().getPlayer(Private.conversations.get(p.getUniqueId()));
                                     if (utils.isOnline(r, p)) {
-                                        privateChannel.sendMessage(p, r, msg);
+                                        privateChannel.sendMessage(p, r, value);
                                     }
                                 }
                                 break;
@@ -228,7 +228,7 @@ public class MaSuiteChat extends Plugin implements Listener {
 
                 if (childchannel.equals("NickOther")) {
                     ProxiedPlayer sender = ProxyServer.getInstance().getPlayer(UUID.fromString(in.readUTF()));
-                    ProxiedPlayer target = ProxyServer.getInstance().getPlayer(UUID.fromString(in.readUTF()));
+                    ProxiedPlayer target = ProxyServer.getInstance().getPlayer(in.readUTF());
                     String nick = in.readUTF();
                     if (utils.isOnline(target, sender)) {
                         target.setDisplayName(in.readUTF());
@@ -240,9 +240,31 @@ public class MaSuiteChat extends Plugin implements Listener {
                     }
 
                 }
+                if (childchannel.equals("ResetNick")) {
+                    ProxiedPlayer sender = ProxyServer.getInstance().getPlayer(UUID.fromString(in.readUTF()));
+                    if (utils.isOnline(sender)) {
+                        sender.setDisplayName(sender.getName());
+                        MaSuitePlayer msp = new MaSuitePlayer();
+                        msp = msp.find(sender.getUniqueId());
+                        msp.setNickname(null);
+                        msp.update(msp);
+                        formator.sendMessage(sender, config.load("chat", "messages.yml").getString("nickname-changed").replace("%nickname%", sender.getName()));
+                    }
+
+                }
+                if (childchannel.equals("ResetNickOther")) {
+                    ProxiedPlayer sender = ProxyServer.getInstance().getPlayer(UUID.fromString(in.readUTF()));
+                    ProxiedPlayer target = ProxyServer.getInstance().getPlayer(in.readUTF());
+                    if (utils.isOnline(target, sender)) {
+                        target.setDisplayName(target.getName());
+                        MaSuitePlayer msp = new MaSuitePlayer();
+                        msp = msp.find(target.getUniqueId());
+                        msp.setNickname(null);
+                        msp.update(msp);
+                        formator.sendMessage(target, config.load("chat", "messages.yml").getString("nickname-changed").replace("%nickname%", target.getName()));
+                    }
+                }
             }
         }
     }
-
-
 }
