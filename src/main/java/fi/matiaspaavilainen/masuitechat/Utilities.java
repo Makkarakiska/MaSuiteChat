@@ -1,6 +1,6 @@
 package fi.matiaspaavilainen.masuitechat;
 
-import fi.matiaspaavilainen.masuitechat.managers.GroupInfo;
+import fi.matiaspaavilainen.masuitechat.managers.Group;
 import fi.matiaspaavilainen.masuitecore.chat.Date;
 import fi.matiaspaavilainen.masuitecore.chat.Formator;
 import fi.matiaspaavilainen.masuitecore.chat.MDChat;
@@ -21,7 +21,7 @@ public class Utilities {
         String format = config.load("chat", "chat.yml").getString("formats." + channel);
         String server = config.load("chat", "chat.yml").getString("channels." + p.getServer().getInfo().getName().toLowerCase() + ".prefix");
 
-        GroupInfo group = new GroupInfo(p.getUniqueId());
+        Group group = new Group().get(p.getUniqueId());
         format = formator.colorize(
                 format.replace("%server%", server)
                         .replace("%prefix%", group.getPrefix())

@@ -2,6 +2,7 @@ package fi.matiaspaavilainen.masuitechat;
 
 import fi.matiaspaavilainen.masuitechat.channels.*;
 import fi.matiaspaavilainen.masuitechat.database.Database;
+import fi.matiaspaavilainen.masuitechat.managers.Group;
 import fi.matiaspaavilainen.masuitechat.managers.MailManager;
 import fi.matiaspaavilainen.masuitechat.managers.ServerManager;
 import fi.matiaspaavilainen.masuitecore.Updator;
@@ -9,9 +10,6 @@ import fi.matiaspaavilainen.masuitecore.Utils;
 import fi.matiaspaavilainen.masuitecore.chat.Formator;
 import fi.matiaspaavilainen.masuitecore.config.Configuration;
 import fi.matiaspaavilainen.masuitecore.managers.MaSuitePlayer;
-import me.lucko.luckperms.LuckPerms;
-import me.lucko.luckperms.api.LuckPermsApi;
-import net.alpenblock.bungeeperms.BungeePerms;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
@@ -21,7 +19,9 @@ import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.event.EventHandler;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -29,9 +29,9 @@ public class MaSuiteChat extends Plugin implements Listener {
 
     public static HashMap<UUID, String> players = new HashMap<>();
     public static HashMap<String, Channel> channels = new HashMap<>();
+    public static HashMap<UUID, Group> groups = new HashMap<>();
     public static Database db = new Database();
-    public static LuckPermsApi luckPermsApi = null;
-    public static BungeePerms bungeePermsApi = null;
+    public static boolean luckPermsApi = false;
     private Configuration config = new Configuration();
     private Formator formator = new Formator();
 
@@ -67,10 +67,7 @@ public class MaSuiteChat extends Plugin implements Listener {
         new Updator().checkVersion(this.getDescription(), "60039");
 
         if (getProxy().getPluginManager().getPlugin("LuckPerms") != null) {
-            luckPermsApi = LuckPerms.getApi();
-        }
-        if (getProxy().getPluginManager().getPlugin("BungeePerms") != null) {
-            bungeePermsApi = BungeePerms.getInstance();
+            luckPermsApi = true;
         }
     }
 
@@ -263,6 +260,11 @@ public class MaSuiteChat extends Plugin implements Listener {
                         msp.update(msp);
                         formator.sendMessage(target, config.load("chat", "messages.yml").getString("nickname-changed").replace("%nickname%", target.getName()));
                     }
+                }
+
+                if (childchannel.equals("SetGroup")) {
+                    UUID uuid = UUID.fromString(in.readUTF());
+                    groups.put(uuid, new Group(uuid, in.readUTF(), in.readUTF()));
                 }
             }
         }

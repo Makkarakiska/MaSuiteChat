@@ -1,6 +1,6 @@
 package fi.matiaspaavilainen.masuitechat.channels;
 
-import fi.matiaspaavilainen.masuitechat.managers.GroupInfo;
+import fi.matiaspaavilainen.masuitechat.managers.Group;
 import fi.matiaspaavilainen.masuitecore.Utils;
 import fi.matiaspaavilainen.masuitecore.chat.Date;
 import fi.matiaspaavilainen.masuitecore.chat.Formator;
@@ -17,12 +17,14 @@ import java.util.UUID;
 
 public class Private {
 
-    public Private(){ }
+    public Private() { }
+
     public static HashMap<UUID, UUID> conversations = new HashMap<>();
 
     private Configuration config = new Configuration();
     private Formator formator = new Formator();
     private Utils utils = new Utils();
+
     public void sendMessage(ProxiedPlayer sender, ProxiedPlayer receiver, String msg) {
 
         if (utils.isOnline(receiver, sender)) {
@@ -37,8 +39,8 @@ public class Private {
     public void create(ProxiedPlayer sender, ProxiedPlayer receiver, String msg) {
         String senderFormat = config.load("chat", "chat.yml").getString("formats.private.sender");
         String receiverFormat = config.load("chat", "chat.yml").getString("formats.private.receiver");
-        GroupInfo senderInfo = new GroupInfo(sender.getUniqueId());
-        GroupInfo receiverInfo = new GroupInfo(receiver.getUniqueId());
+        Group senderInfo = new Group().get(sender.getUniqueId());
+        Group receiverInfo = new Group().get(receiver.getUniqueId());
         senderFormat = formator.colorize(senderFormat
                 .replace("%sender_nickname%", sender.getDisplayName())
                 .replace("%receiver_nickname%", receiver.getDisplayName())
