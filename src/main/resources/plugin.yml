@@ -1,5 +1,42 @@
 name: MaSuiteChat
-main: fi.matiaspaavilainen.masuitechat.MaSuiteChat
-version: 1.4
+main: fi.matiaspaavilainen.masuitechat.bukkit.MaSuiteChat
+version: ${project.version}
 author: Masagameplay
-depends: [MaSuiteCore]
+depend: [Vault, MaSuiteCore]
+softdepend: [GriefPrevention, WorldGuard]
+commands:
+  mail:
+    description: Send mail to player
+    aliases: [mailplayer, playermail, mailto]
+  nick:
+    description: Change nick of player
+    aliases: [nickname]
+    permission: masuitechat.nick
+  resetnick:
+    description: Reset nick of player
+    aliases: [resetnickname]
+    permission: masuitechat.nick
+  staff:
+    description: Send message or toggle staff channel
+    aliases: [sc, ac, a, adminchat, admin, staff]
+    permission: masuitechat.channel.staff
+  global:
+    description: Send message or toggle global channel
+    aliases: [g, globalchannel]
+    permission: masuitechat.channel.global
+  server:
+    description: Send message or toggle server channel
+    aliases: [s, serverchannel]
+    permission: masuitechat.channel.server
+  local:
+    description: Send message or toggle local channel
+    aliases: [local, l, localchannel]
+    permission: masuitechat.channel.local
+  tell:
+    description: Send private message to player
+    aliases: [msg, tell, whisper, w]
+    permission: masuitechat.channel.private
+  reply:
+    description: Reply to private message
+    aliases: [r]
+    permission: masuitechat.channel.private
