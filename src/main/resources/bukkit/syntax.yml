@@ -1,0 +1,8 @@
+nick:
+  set: "&cCorrect syntax: /nick (<player>) <nick>"
+  reset: "&cCorrect syntax: /resetnick (<player>)"
+mail:
+  send: "&cCorrect syntax: /mail <player> <message>"
+  send-all: "&cCorrect syntax: /mail sendall <message>"
+  read: "&cCorrect syntax: /mail read"
+  all: "&cCorrect syntax: /mail <sendall/read>"
