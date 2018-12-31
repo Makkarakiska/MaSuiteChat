@@ -1,6 +1,6 @@
-package fi.matiaspaavilainen.masuitechat.managers;
+package fi.matiaspaavilainen.masuitechat.bungee.objects;
 
-import fi.matiaspaavilainen.masuitechat.MaSuiteChat;
+import fi.matiaspaavilainen.masuitechat.bungee.MaSuiteChat;
 import me.lucko.luckperms.LuckPerms;
 import me.lucko.luckperms.api.Contexts;
 import me.lucko.luckperms.api.LuckPermsApi;

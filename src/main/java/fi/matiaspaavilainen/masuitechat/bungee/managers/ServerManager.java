@@ -1,12 +1,15 @@
-package fi.matiaspaavilainen.masuitechat.managers;
+package fi.matiaspaavilainen.masuitechat.bungee.managers;
 
-import fi.matiaspaavilainen.masuitecore.config.Configuration;
+import fi.matiaspaavilainen.masuitecore.core.configuration.BungeeConfiguration;
 import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.config.Configuration;
+
 
 public class ServerManager {
 
+
     public static void loadServers() {
-        net.md_5.bungee.config.Configuration config = new Configuration().load("chat","chat.yml");
+        Configuration config = new BungeeConfiguration().load("chat", "bungee/chat.yml");
         for (String server : ProxyServer.getInstance().getServers().keySet()) {
             if(!config.contains("channels." + server.toLowerCase())){
                 System.out.println("Added " + server + " to channels section!");
@@ -14,6 +17,6 @@ public class ServerManager {
                 config.set("channels." + server.toLowerCase() + ".localRadius", 100);
             }
         }
-        new Configuration().save(config, "chat/chat.yml");
+        new BungeeConfiguration().save(config, "chat/chat.yml");
     }
 }

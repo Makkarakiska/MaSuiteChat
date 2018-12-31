@@ -1,15 +1,15 @@
-package fi.matiaspaavilainen.masuitechat;
+package fi.matiaspaavilainen.masuitechat.bungee;
 
-import fi.matiaspaavilainen.masuitechat.channels.*;
-import fi.matiaspaavilainen.masuitechat.database.Database;
-import fi.matiaspaavilainen.masuitechat.managers.Group;
-import fi.matiaspaavilainen.masuitechat.managers.MailManager;
-import fi.matiaspaavilainen.masuitechat.managers.ServerManager;
-import fi.matiaspaavilainen.masuitecore.Updator;
-import fi.matiaspaavilainen.masuitecore.Utils;
-import fi.matiaspaavilainen.masuitecore.chat.Formator;
-import fi.matiaspaavilainen.masuitecore.config.Configuration;
-import fi.matiaspaavilainen.masuitecore.managers.MaSuitePlayer;
+import fi.matiaspaavilainen.masuitechat.bungee.channels.*;
+import fi.matiaspaavilainen.masuitechat.bungee.objects.Group;
+import fi.matiaspaavilainen.masuitechat.bungee.managers.MailManager;
+import fi.matiaspaavilainen.masuitechat.bungee.managers.ServerManager;
+import fi.matiaspaavilainen.masuitecore.bungee.Utils;
+import fi.matiaspaavilainen.masuitecore.bungee.chat.Formator;
+import fi.matiaspaavilainen.masuitecore.core.Updator;
+import fi.matiaspaavilainen.masuitecore.core.configuration.BungeeConfiguration;
+import fi.matiaspaavilainen.masuitecore.core.database.ConnectionManager;
+import fi.matiaspaavilainen.masuitecore.core.objects.MaSuitePlayer;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
@@ -17,6 +17,7 @@ import net.md_5.bungee.api.event.PluginMessageEvent;
 import net.md_5.bungee.api.event.PostLoginEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
+import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.event.EventHandler;
 
 import java.io.ByteArrayInputStream;
@@ -28,24 +29,24 @@ import java.util.UUID;
 public class MaSuiteChat extends Plugin implements Listener {
 
     public static HashMap<UUID, String> players = new HashMap<>();
-    public static HashMap<String, Channel> channels = new HashMap<>();
     public static HashMap<UUID, Group> groups = new HashMap<>();
-    public static Database db = new Database();
     public static boolean luckPermsApi = false;
-    private Configuration config = new Configuration();
     private Formator formator = new Formator();
 
     private Utils utils = new Utils();
 
+    private BungeeConfiguration config = new BungeeConfiguration();
+    private ConnectionManager cm = null;
+
     @Override
     public void onEnable() {
-        super.onEnable();
-        Configuration config = new Configuration();
         getProxy().getPluginManager().registerListener(this, this);
 
         // Database
-        db.connect();
-        db.createTable("mail", "(" +
+        Configuration dbInfo = config.load(null, "config.yml");
+        cm = new ConnectionManager(dbInfo.getString("database.table-prefix"), dbInfo.getString("database.address"), dbInfo.getInt("database.port"), dbInfo.getString("database.name"), dbInfo.getString("database.username"), dbInfo.getString("database.password"));
+        cm.connect();
+        cm.getDatabase().createTable("mail", "(" +
                 "id INT(10) UNSIGNED PRIMARY KEY AUTO_INCREMENT, " +
                 "sender VARCHAR(36) NOT NULL, " +
                 "receiver VARCHAR(36) NOT NULL, " +
@@ -55,17 +56,14 @@ public class MaSuiteChat extends Plugin implements Listener {
                 ");");
 
         // Create configs
-        //config.create(this, "chat", "actions.yml");
-        config.create(this, "chat", "aliases.yml");
-        config.create(this, "chat", "messages.yml");
-        config.create(this, "chat", "chat.yml");
-        config.create(this, "chat", "syntax.yml");
+        config.create("chat", "messages.yml");
+        config.create("chat", "bungee/chat.yml");
+        config.create("chat", "syntax.yml");
 
         // Load actions, servers and channels
         ServerManager.loadServers();
 
-        new Updator().checkVersion(this.getDescription(), "60039");
-
+        new Updator(new String[]{getDescription().getVersion(), getDescription().getName(), "60039"}).checkUpdates();
         if (getProxy().getPluginManager().getPlugin("LuckPerms") != null) {
             luckPermsApi = true;
         }
@@ -73,8 +71,7 @@ public class MaSuiteChat extends Plugin implements Listener {
 
     @Override
     public void onDisable() {
-        super.onDisable();
-        db.hikari.close();
+        cm.close();
     }
 
     @EventHandler
@@ -101,7 +98,7 @@ public class MaSuiteChat extends Plugin implements Listener {
 
     @EventHandler
     public void onPluginMessage(PluginMessageEvent e) throws IOException {
-        Configuration config = new Configuration();
+        BungeeConfiguration config = new BungeeConfiguration();
         Local localChannel = new Local(this);
         Private privateChannel = new Private();
         if (e.getTag().equals("BungeeCord")) {
@@ -218,7 +215,7 @@ public class MaSuiteChat extends Plugin implements Listener {
                         MaSuitePlayer msp = new MaSuitePlayer();
                         msp = msp.find(sender.getUniqueId());
                         msp.setNickname(nick);
-                        msp.update(msp);
+                        msp.update();
                         formator.sendMessage(sender, config.load("chat", "messages.yml").getString("nickname-changed").replace("%nickname%", nick));
                     }
                 }
@@ -232,7 +229,7 @@ public class MaSuiteChat extends Plugin implements Listener {
                         MaSuitePlayer msp = new MaSuitePlayer();
                         msp = msp.find(target.getUniqueId());
                         msp.setNickname(nick);
-                        msp.update(msp);
+                        msp.update();
                         formator.sendMessage(sender, config.load("chat", "messages.yml").getString("nickname-changed").replace("%nickname%", nick));
                     }
 
@@ -240,12 +237,7 @@ public class MaSuiteChat extends Plugin implements Listener {
                 if (childchannel.equals("ResetNick")) {
                     ProxiedPlayer sender = ProxyServer.getInstance().getPlayer(UUID.fromString(in.readUTF()));
                     if (utils.isOnline(sender)) {
-                        sender.setDisplayName(sender.getName());
-                        MaSuitePlayer msp = new MaSuitePlayer();
-                        msp = msp.find(sender.getUniqueId());
-                        msp.setNickname(null);
-                        msp.update(msp);
-                        formator.sendMessage(sender, config.load("chat", "messages.yml").getString("nickname-changed").replace("%nickname%", sender.getName()));
+                        updateNick(config, sender);
                     }
 
                 }
@@ -253,12 +245,7 @@ public class MaSuiteChat extends Plugin implements Listener {
                     ProxiedPlayer sender = ProxyServer.getInstance().getPlayer(UUID.fromString(in.readUTF()));
                     ProxiedPlayer target = ProxyServer.getInstance().getPlayer(in.readUTF());
                     if (utils.isOnline(target, sender)) {
-                        target.setDisplayName(target.getName());
-                        MaSuitePlayer msp = new MaSuitePlayer();
-                        msp = msp.find(target.getUniqueId());
-                        msp.setNickname(null);
-                        msp.update(msp);
-                        formator.sendMessage(target, config.load("chat", "messages.yml").getString("nickname-changed").replace("%nickname%", target.getName()));
+                        updateNick(config, target);
                     }
                 }
 
@@ -268,5 +255,14 @@ public class MaSuiteChat extends Plugin implements Listener {
                 }
             }
         }
+    }
+
+    private void updateNick(BungeeConfiguration config, ProxiedPlayer target) {
+        target.setDisplayName(target.getName());
+        MaSuitePlayer msp = new MaSuitePlayer();
+        msp = msp.find(target.getUniqueId());
+        msp.setNickname(null);
+        msp.update();
+        formator.sendMessage(target, config.load("chat", "messages.yml").getString("nickname-changed").replace("%nickname%", target.getName()));
     }
 }

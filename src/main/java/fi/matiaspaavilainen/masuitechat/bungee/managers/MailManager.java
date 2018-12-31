@@ -1,10 +1,10 @@
-package fi.matiaspaavilainen.masuitechat.managers;
+package fi.matiaspaavilainen.masuitechat.bungee.managers;
 
-import fi.matiaspaavilainen.masuitechat.Mail;
-import fi.matiaspaavilainen.masuitecore.Utils;
-import fi.matiaspaavilainen.masuitecore.chat.Formator;
-import fi.matiaspaavilainen.masuitecore.config.Configuration;
-import fi.matiaspaavilainen.masuitecore.managers.MaSuitePlayer;
+import fi.matiaspaavilainen.masuitechat.bungee.objects.Mail;
+import fi.matiaspaavilainen.masuitecore.bungee.Utils;
+import fi.matiaspaavilainen.masuitecore.bungee.chat.Formator;
+import fi.matiaspaavilainen.masuitecore.core.configuration.BungeeConfiguration;
+import fi.matiaspaavilainen.masuitecore.core.objects.MaSuitePlayer;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
@@ -13,7 +13,7 @@ import java.util.StringJoiner;
 
 public class MailManager {
 
-    private Configuration config = new Configuration();
+    private BungeeConfiguration config = new BungeeConfiguration();
     private Formator formator = new Formator();
     private Utils utils = new Utils();
 
@@ -22,11 +22,11 @@ public class MailManager {
         if (utils.isOnline(sender)) {
 
             MaSuitePlayer receiver = new MaSuitePlayer().find(r);
-            if (receiver.getUUID() == null) {
+            if (receiver.getUniqueId() == null) {
                 formator.sendMessage(sender, config.load("chat", "messages.yml").getString("mail.player-not-found"));
                 return;
             }
-            Mail mail = new Mail(sender.getUniqueId(), receiver.getUUID(), message, System.currentTimeMillis() / 1000);
+            Mail mail = new Mail(sender.getUniqueId(), receiver.getUniqueId(), message, System.currentTimeMillis() / 1000);
 
             // Notify player(s)
             if (mail.send()) {
@@ -44,12 +44,12 @@ public class MailManager {
 
             Set<MaSuitePlayer> maSuitePlayers = new MaSuitePlayer().findAll();
             maSuitePlayers.forEach(msp -> {
-                Mail mail = new Mail(sender.getUniqueId(), msp.getUUID(), message, System.currentTimeMillis() / 1000);
+                Mail mail = new Mail(sender.getUniqueId(), msp.getUniqueId(), message, System.currentTimeMillis() / 1000);
                 // Notify player(s)
                 if (mail.send()) {
                     formator.sendMessage(sender, config.load("chat", "messages.yml").getString("mail.sent").replace("%player%", msp.getUsername()));
-                    if (utils.isOnline(ProxyServer.getInstance().getPlayer(msp.getUUID()))) {
-                        formator.sendMessage(ProxyServer.getInstance().getPlayer(msp.getUUID()), config.load("chat", "messages.yml").getString("mail.received").replace("%player%", sender.getName()));
+                    if (utils.isOnline(ProxyServer.getInstance().getPlayer(msp.getUniqueId()))) {
+                        formator.sendMessage(ProxyServer.getInstance().getPlayer(msp.getUniqueId()), config.load("chat", "messages.yml").getString("mail.received").replace("%player%", sender.getName()));
                     }
                 }
             });
@@ -70,7 +70,7 @@ public class MailManager {
             // Do some magic with mails
             mailSet.forEach(mail -> {
                 MaSuitePlayer sender = new MaSuitePlayer().find(mail.getSender());
-                joiner.add(config.load("chat", "chat.yml").getString("formats.mail")
+                joiner.add(config.load("chat", "bungee/chat.yml").getString("formats.mail")
                         .replace("%sender_realname%", sender.getUsername())
                         .replace("%sender_nickname%", sender.getNickname() != null ? sender.getNickname() : sender.getUsername())
                         .replace("%message%", mail.getMessage())

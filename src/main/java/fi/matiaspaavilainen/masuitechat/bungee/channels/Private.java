@@ -1,11 +1,11 @@
-package fi.matiaspaavilainen.masuitechat.channels;
+package fi.matiaspaavilainen.masuitechat.bungee.channels;
 
-import fi.matiaspaavilainen.masuitechat.managers.Group;
-import fi.matiaspaavilainen.masuitecore.Utils;
-import fi.matiaspaavilainen.masuitecore.chat.Date;
-import fi.matiaspaavilainen.masuitecore.chat.Formator;
-import fi.matiaspaavilainen.masuitecore.chat.MDChat;
-import fi.matiaspaavilainen.masuitecore.config.Configuration;
+import fi.matiaspaavilainen.masuitechat.bungee.objects.Group;
+import fi.matiaspaavilainen.masuitecore.bungee.Utils;
+import fi.matiaspaavilainen.masuitecore.bungee.chat.Formator;
+import fi.matiaspaavilainen.masuitecore.bungee.chat.MDChat;
+import fi.matiaspaavilainen.masuitecore.core.configuration.BungeeConfiguration;
+import fi.matiaspaavilainen.masuitecore.core.utils.Date;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -17,11 +17,12 @@ import java.util.UUID;
 
 public class Private {
 
-    public Private() { }
+    public Private() {
+    }
 
     public static HashMap<UUID, UUID> conversations = new HashMap<>();
 
-    private Configuration config = new Configuration();
+    private BungeeConfiguration config = new BungeeConfiguration();
     private Formator formator = new Formator();
     private Utils utils = new Utils();
 
@@ -37,8 +38,8 @@ public class Private {
     }
 
     public void create(ProxiedPlayer sender, ProxiedPlayer receiver, String msg) {
-        String senderFormat = config.load("chat", "chat.yml").getString("formats.private.sender");
-        String receiverFormat = config.load("chat", "chat.yml").getString("formats.private.receiver");
+        String senderFormat = config.load("chat", "bungee/chat.yml").getString("formats.private.sender");
+        String receiverFormat = config.load("chat", "bungee/chat.yml").getString("formats.private.receiver");
         Group senderInfo = new Group().get(sender.getUniqueId());
         Group receiverInfo = new Group().get(receiver.getUniqueId());
         senderFormat = formator.colorize(senderFormat

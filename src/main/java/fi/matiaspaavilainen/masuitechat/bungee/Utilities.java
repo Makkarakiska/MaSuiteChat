@@ -1,10 +1,10 @@
-package fi.matiaspaavilainen.masuitechat;
+package fi.matiaspaavilainen.masuitechat.bungee;
 
-import fi.matiaspaavilainen.masuitechat.managers.Group;
-import fi.matiaspaavilainen.masuitecore.chat.Date;
-import fi.matiaspaavilainen.masuitecore.chat.Formator;
-import fi.matiaspaavilainen.masuitecore.chat.MDChat;
-import fi.matiaspaavilainen.masuitecore.config.Configuration;
+import fi.matiaspaavilainen.masuitechat.bungee.objects.Group;
+import fi.matiaspaavilainen.masuitecore.bungee.chat.Formator;
+import fi.matiaspaavilainen.masuitecore.bungee.chat.MDChat;
+import fi.matiaspaavilainen.masuitecore.core.configuration.BungeeConfiguration;
+import fi.matiaspaavilainen.masuitecore.core.utils.Date;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -16,10 +16,10 @@ public class Utilities {
     public static BaseComponent[] chatFormat(ProxiedPlayer p, String msg, String channel) {
 
         Formator formator = new Formator();
-        Configuration config = new Configuration();
+        BungeeConfiguration config = new BungeeConfiguration();
 
-        String format = config.load("chat", "chat.yml").getString("formats." + channel);
-        String server = config.load("chat", "chat.yml").getString("channels." + p.getServer().getInfo().getName().toLowerCase() + ".prefix");
+        String format = config.load("chat", "bungee/chat.yml").getString("formats." + channel);
+        String server = config.load("chat", "bungee/chat.yml").getString("channels." + p.getServer().getInfo().getName().toLowerCase() + ".prefix");
 
         Group group = new Group().get(p.getUniqueId());
         format = formator.colorize(

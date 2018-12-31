@@ -1,8 +1,7 @@
-package fi.matiaspaavilainen.masuitechat;
+package fi.matiaspaavilainen.masuitechat.bungee.objects;
 
-import fi.matiaspaavilainen.masuitecore.database.Database;
-import fi.matiaspaavilainen.masuitecore.MaSuiteCore;
-import fi.matiaspaavilainen.masuitecore.config.Configuration;
+import fi.matiaspaavilainen.masuitecore.core.database.ConnectionManager;
+import fi.matiaspaavilainen.masuitecore.core.database.Database;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,11 +12,10 @@ import java.util.Set;
 import java.util.UUID;
 
 public class Mail {
-    private Database db = MaSuiteCore.db;
+    private Database db = ConnectionManager.db;
     private Connection connection = null;
     private PreparedStatement statement = null;
-    private Configuration config = new Configuration();
-    private String tablePrefix = config.load(null, "config.yml").getString("database.table-prefix");
+    private String tablePrefix = db.getTablePrefix();
 
     // Info
     private int id;

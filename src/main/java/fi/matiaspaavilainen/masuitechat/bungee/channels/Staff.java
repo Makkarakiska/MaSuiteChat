@@ -1,6 +1,6 @@
-package fi.matiaspaavilainen.masuitechat.channels;
+package fi.matiaspaavilainen.masuitechat.bungee.channels;
 
-import fi.matiaspaavilainen.masuitechat.Utilities;
+import fi.matiaspaavilainen.masuitechat.bungee.Utilities;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;

@@ -1,4 +1,4 @@
-package fi.matiaspaavilainen.masuitechat;
+package fi.matiaspaavilainen.masuitechat.bungee.objects;
 
 public class Channel {
 
