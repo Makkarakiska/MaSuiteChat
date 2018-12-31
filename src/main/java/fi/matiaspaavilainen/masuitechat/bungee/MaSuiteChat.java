@@ -57,8 +57,7 @@ public class MaSuiteChat extends Plugin implements Listener {
 
         // Create configs
         config.create("chat", "messages.yml");
-        config.create("chat", "bungee/chat.yml");
-        config.create("chat", "syntax.yml");
+        config.create("chat", "chat.yml");
 
         // Load actions, servers and channels
         ServerManager.loadServers();

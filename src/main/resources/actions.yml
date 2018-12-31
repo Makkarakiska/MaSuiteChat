@@ -1,8 +1,0 @@
-#Available variables for commands are %player%
-player:
-  - "/msg %player% "
-  - "/mail %player% "
-staff:
-  - "/ban %player% "
-  - "/mute %player% "
-  - "/kick %player% "
