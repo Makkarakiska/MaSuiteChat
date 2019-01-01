@@ -38,8 +38,8 @@ public class Private {
     }
 
     public void create(ProxiedPlayer sender, ProxiedPlayer receiver, String msg) {
-        String senderFormat = config.load("chat", "bungee/chat.yml").getString("formats.private.sender");
-        String receiverFormat = config.load("chat", "bungee/chat.yml").getString("formats.private.receiver");
+        String senderFormat = config.load("chat", "chat.yml").getString("formats.private.sender");
+        String receiverFormat = config.load("chat", "chat.yml").getString("formats.private.receiver");
         Group senderInfo = new Group().get(sender.getUniqueId());
         Group receiverInfo = new Group().get(receiver.getUniqueId());
         senderFormat = formator.colorize(senderFormat

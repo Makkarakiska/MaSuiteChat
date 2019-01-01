@@ -9,7 +9,7 @@ public class ServerManager {
 
 
     public static void loadServers() {
-        Configuration config = new BungeeConfiguration().load("chat", "bungee/chat.yml");
+        Configuration config = new BungeeConfiguration().load("chat", "chat.yml");
         for (String server : ProxyServer.getInstance().getServers().keySet()) {
             if(!config.contains("channels." + server.toLowerCase())){
                 System.out.println("Added " + server + " to channels section!");

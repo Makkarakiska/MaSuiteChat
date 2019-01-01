@@ -70,7 +70,7 @@ public class MailManager {
             // Do some magic with mails
             mailSet.forEach(mail -> {
                 MaSuitePlayer sender = new MaSuitePlayer().find(mail.getSender());
-                joiner.add(config.load("chat", "bungee/chat.yml").getString("formats.mail")
+                joiner.add(config.load("chat", "chat.yml").getString("formats.mail")
                         .replace("%sender_realname%", sender.getUsername())
                         .replace("%sender_nickname%", sender.getNickname() != null ? sender.getNickname() : sender.getUsername())
                         .replace("%message%", mail.getMessage())

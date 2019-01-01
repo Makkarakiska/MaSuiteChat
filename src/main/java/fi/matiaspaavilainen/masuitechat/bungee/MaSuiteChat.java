@@ -42,6 +42,10 @@ public class MaSuiteChat extends Plugin implements Listener {
     public void onEnable() {
         getProxy().getPluginManager().registerListener(this, this);
 
+        // Create configs
+        config.create(this, "chat", "messages.yml");
+        config.create(this, "chat", "chat.yml");
+
         // Database
         Configuration dbInfo = config.load(null, "config.yml");
         cm = new ConnectionManager(dbInfo.getString("database.table-prefix"), dbInfo.getString("database.address"), dbInfo.getInt("database.port"), dbInfo.getString("database.name"), dbInfo.getString("database.username"), dbInfo.getString("database.password"));
@@ -55,9 +59,7 @@ public class MaSuiteChat extends Plugin implements Listener {
                 "timestamp BIGINT(16) NOT NULL" +
                 ");");
 
-        // Create configs
-        config.create("chat", "messages.yml");
-        config.create("chat", "chat.yml");
+
 
         // Load actions, servers and channels
         ServerManager.loadServers();

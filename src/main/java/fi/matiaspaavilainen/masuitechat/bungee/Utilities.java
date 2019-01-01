@@ -18,8 +18,8 @@ public class Utilities {
         Formator formator = new Formator();
         BungeeConfiguration config = new BungeeConfiguration();
 
-        String format = config.load("chat", "bungee/chat.yml").getString("formats." + channel);
-        String server = config.load("chat", "bungee/chat.yml").getString("channels." + p.getServer().getInfo().getName().toLowerCase() + ".prefix");
+        String format = config.load("chat", "chat.yml").getString("formats." + channel);
+        String server = config.load("chat", "chat.yml").getString("channels." + p.getServer().getInfo().getName().toLowerCase() + ".prefix");
 
         Group group = new Group().get(p.getUniqueId());
         format = formator.colorize(

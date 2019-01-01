@@ -25,7 +25,7 @@ public class Local {
 
     public void send(ProxiedPlayer p, String msg) {
         String server = p.getServer().getInfo().getName().toLowerCase();
-        int range = config.load("chat", "bungee/chat.yml").getInt("channels." + server + ".localRadius");
+        int range = config.load("chat", "chat.yml").getInt("channels." + server + ".localRadius");
 
         try (ByteArrayOutputStream b = new ByteArrayOutputStream();
              DataOutputStream out = new DataOutputStream(b)) {
