@@ -1,9 +1,9 @@
 package fi.matiaspaavilainen.masuitechat.bungee;
 
 import fi.matiaspaavilainen.masuitechat.bungee.channels.*;
-import fi.matiaspaavilainen.masuitechat.bungee.objects.Group;
 import fi.matiaspaavilainen.masuitechat.bungee.managers.MailManager;
 import fi.matiaspaavilainen.masuitechat.bungee.managers.ServerManager;
+import fi.matiaspaavilainen.masuitechat.bungee.objects.Group;
 import fi.matiaspaavilainen.masuitecore.bungee.Utils;
 import fi.matiaspaavilainen.masuitecore.bungee.chat.Formator;
 import fi.matiaspaavilainen.masuitecore.core.Updator;
@@ -17,7 +17,6 @@ import net.md_5.bungee.api.event.PluginMessageEvent;
 import net.md_5.bungee.api.event.PostLoginEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
-import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.event.EventHandler;
 
 import java.io.ByteArrayInputStream;
@@ -64,11 +63,6 @@ public class MaSuiteChat extends Plugin implements Listener {
         if (getProxy().getPluginManager().getPlugin("LuckPerms") != null) {
             luckPermsApi = true;
         }
-    }
-
-    @Override
-    public void onDisable() {
-        cm.close();
     }
 
     @EventHandler
