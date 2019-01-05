@@ -45,7 +45,7 @@ public class Private implements CommandExecutor {
                 e.printStackTrace();
             }
         } else {
-            // TODO: SYNTAX MESSAGE
+           plugin.formator.sendMessage(p, plugin.config.load("chat", "syntax").getString("private.send"));
         }
         return true;
     }
