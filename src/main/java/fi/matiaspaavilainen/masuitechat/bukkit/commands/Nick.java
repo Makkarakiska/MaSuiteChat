@@ -17,7 +17,7 @@ public class Nick implements CommandExecutor {
     private MaSuiteChat plugin;
 
     public Nick(MaSuiteChat plugin) {
-        plugin = this.plugin;
+        this.plugin = plugin;
     }
 
     @Override
@@ -50,7 +50,7 @@ public class Nick implements CommandExecutor {
                 e.printStackTrace();
             }
         } else {
-            p.spigot().sendMessage(new TextComponent(ChatColor.translateAlternateColorCodes('&', plugin.config.getSyntaxes().getString("nick.set"))));
+            plugin.formator.sendMessage(p, plugin.config.load("chat", "syntax.yml").getString("nick.set"));
         }
         return true;
     }

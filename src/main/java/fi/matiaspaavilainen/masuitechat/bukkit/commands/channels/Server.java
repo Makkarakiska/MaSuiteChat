@@ -47,8 +47,7 @@ public class Server implements CommandExecutor {
                 out.writeUTF("server");
                 out.writeUTF(p.getUniqueId().toString());
                 out.writeUTF(Joiner.on(" ").join(args));
-                plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () ->
-                        p.sendPluginMessage(plugin, "BungeeCord", b.toByteArray()));
+                plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> p.sendPluginMessage(plugin, "BungeeCord", b.toByteArray()));
             } catch (IOException e) {
                 e.printStackTrace();
             }

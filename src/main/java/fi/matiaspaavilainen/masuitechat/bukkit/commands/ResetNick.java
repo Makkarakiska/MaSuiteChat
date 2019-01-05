@@ -48,7 +48,7 @@ public class ResetNick implements CommandExecutor {
                 e.printStackTrace();
             }
         } else{
-            p.spigot().sendMessage(new TextComponent(ChatColor.translateAlternateColorCodes('&', plugin.config.getSyntaxes().getString("nick.reset"))));
+            plugin.formator.sendMessage(p, plugin.config.load("chat", "syntax.yml").getString("nick.reset"));
         }
         return true;
     }

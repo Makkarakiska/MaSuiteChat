@@ -38,7 +38,8 @@ public class Staff implements CommandExecutor {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } if (args.length > 0){
+        }
+        if (args.length > 0) {
             try (ByteArrayOutputStream b = new ByteArrayOutputStream();
                  DataOutputStream out = new DataOutputStream(b)) {
                 out.writeUTF("MaSuiteChat");
@@ -46,8 +47,7 @@ public class Staff implements CommandExecutor {
                 out.writeUTF("staff");
                 out.writeUTF(p.getUniqueId().toString());
                 out.writeUTF(Joiner.on(" ").join(args));
-                plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () ->
-                        p.sendPluginMessage(plugin, "BungeeCord", b.toByteArray()));
+                plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> p.sendPluginMessage(plugin, "BungeeCord", b.toByteArray()));
             } catch (IOException e) {
                 e.printStackTrace();
             }

@@ -33,11 +33,12 @@ public class Reply implements CommandExecutor {
                 out.writeUTF("reply");
                 out.writeUTF(p.getUniqueId().toString());
                 out.writeUTF(Joiner.on(" ").join(args));
-                plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () ->
-                        p.sendPluginMessage(plugin, "BungeeCord", b.toByteArray()));
+                plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> p.sendPluginMessage(plugin, "BungeeCord", b.toByteArray()));
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        } else {
+            plugin.formator.sendMessage(p, plugin.config.load("chat", "syntax.yml").getString("private.reply"));
         }
         return true;
     }

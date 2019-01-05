@@ -1,8 +1,6 @@
 package fi.matiaspaavilainen.masuitechat.bukkit.commands;
 
 import fi.matiaspaavilainen.masuitechat.bukkit.MaSuiteChat;
-import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -31,12 +29,12 @@ public class Mail implements CommandExecutor {
         if (args.length >= 2) {
             if (args[0].equalsIgnoreCase("sendall")) {
                 if (!p.hasPermission("masuitechat.mail.sendall")) {
-                    p.spigot().sendMessage(new TextComponent(ChatColor.translateAlternateColorCodes('&', plugin.config.getMessages().getString("no-permission"))));
+                    plugin.formator.sendMessage(p, plugin.config.load(null, "messages.yml").getString("no-permission"));
                     return false;
                 }
             }
             if (!p.hasPermission("masuitechat.mail.send")) {
-                p.spigot().sendMessage(new TextComponent(ChatColor.translateAlternateColorCodes('&', plugin.config.getMessages().getString("no-permission"))));
+                plugin.formator.sendMessage(p, plugin.config.load(null, "messages.yml").getString("no-permission"));
                 return false;
             }
             StringBuilder msg = new StringBuilder();
@@ -63,7 +61,7 @@ public class Mail implements CommandExecutor {
         } else if (args.length == 1) {
             if (args[0].equalsIgnoreCase("read")) {
                 if (!p.hasPermission("masuitechat.mail.read")) {
-                    p.spigot().sendMessage(new TextComponent(ChatColor.translateAlternateColorCodes('&', plugin.config.getMessages().getString("no-permission"))));
+                    plugin.formator.sendMessage(p, plugin.config.load(null, "messages.yml").getString("no-permission"));
                     return false;
                 }
                 try {
@@ -76,11 +74,11 @@ public class Mail implements CommandExecutor {
                     e.printStackTrace();
                 }
             } else {
-                p.spigot().sendMessage(new TextComponent(ChatColor.translateAlternateColorCodes('&', plugin.config.getSyntaxes().getString("mail.read"))));
+                plugin.formator.sendMessage(p, plugin.config.load("chat", "syntax.yml").getString("mail.read"));
             }
 
         } else {
-            p.spigot().sendMessage(new TextComponent(ChatColor.translateAlternateColorCodes('&', plugin.config.getSyntaxes().getString("mail.all"))));
+            plugin.formator.sendMessage(p, plugin.config.load("chat", "syntax.yml").getString("mail.all"));
         }
         return false;
     }

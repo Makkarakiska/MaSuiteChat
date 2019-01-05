@@ -6,3 +6,6 @@ mail:
   send-all: "&cCorrect syntax: /mail sendall <message>"
   read: "&cCorrect syntax: /mail read"
   all: "&cCorrect syntax: /mail <sendall/read>"
+private:
+  send: "&cCorrect syntax: /msg <player> <message>"
+  reply: "&cCorrect syntax: /r <message>"
