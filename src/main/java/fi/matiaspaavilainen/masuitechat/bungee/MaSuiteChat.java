@@ -36,7 +36,6 @@ public class MaSuiteChat extends Plugin implements Listener {
     private Utils utils = new Utils();
 
     private BungeeConfiguration config = new BungeeConfiguration();
-    private ConnectionManager cm = null;
 
     @Override
     public void onEnable() {
@@ -47,10 +46,7 @@ public class MaSuiteChat extends Plugin implements Listener {
         config.create(this, "chat", "chat.yml");
 
         // Database
-        Configuration dbInfo = config.load(null, "config.yml");
-        cm = new ConnectionManager(dbInfo.getString("database.table-prefix"), dbInfo.getString("database.address"), dbInfo.getInt("database.port"), dbInfo.getString("database.name"), dbInfo.getString("database.username"), dbInfo.getString("database.password"));
-        cm.connect();
-        cm.getDatabase().createTable("mail", "(" +
+        ConnectionManager.db.createTable("mail", "(" +
                 "id INT(10) UNSIGNED PRIMARY KEY AUTO_INCREMENT, " +
                 "sender VARCHAR(36) NOT NULL, " +
                 "receiver VARCHAR(36) NOT NULL, " +
