@@ -8,6 +8,9 @@ channel-changed:
   server: "&aChanged to Server channel"
   local: "&aChanged to Local channel"
 
+ignore-channel:
+  ingore: "&cYou are now ignoring that channel!"
+  unignore: "&aYou are now seeing that channel again!"
 #Mail
 mail:
   player-not-found: "&cPlayer not found."

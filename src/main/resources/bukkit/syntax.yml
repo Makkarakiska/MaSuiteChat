@@ -9,3 +9,4 @@ mail:
 private:
   send: "&cCorrect syntax: /msg <player> <message>"
   reply: "&cCorrect syntax: /r <message>"
+ignore-channel: "&cCorrect syntax: /ignorechannel <global/server>"
