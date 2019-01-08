@@ -39,20 +39,12 @@
     </build>
     <repositories>
         <repository>
-            <id>bungeecord-repo</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </repository>
-        <repository>
-            <id>spigot-repo</id>
-            <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
-        </repository>
-        <repository>
             <id>vault-repo</id>
             <url>http://nexus.hc.to/content/repositories/pub_releases</url>
         </repository>
         <repository>
             <id>codemc-repo</id>
-            <url>https://repo.codemc.org/repository/maven-public/</url>
+            <url>https://repo.codemc.org/repository/maven-snapshots/</url>
         </repository>
     </repositories>
     <dependencies>
@@ -72,7 +64,7 @@
         <dependency>
             <groupId>fi.matiaspaavilainen</groupId>
             <artifactId>MaSuiteCore</artifactId>
-            <version>1.5</version>
+            <version>1.5-20190108.114520-5</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
