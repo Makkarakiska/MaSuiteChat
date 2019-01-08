@@ -38,6 +38,8 @@ public class MaSuiteChat extends JavaPlugin implements Listener {
             System.out.println("[MaSuite] [Chat] Vault not found... Disabling...");
             getServer().getPluginManager().disablePlugin(this);
         }
+
+        config.load("chat", "syntax.yml").addDefault("ignore-channel", "&cCorrect syntax: /ignorechannel <global/server>");
     }
 
 
@@ -49,7 +51,7 @@ public class MaSuiteChat extends JavaPlugin implements Listener {
         getCommand("local").setExecutor(new Local(this));
         getCommand("tell").setExecutor(new Private(this));
         getCommand("reply").setExecutor(new Reply(this));
-
+        getCommand("ignorechannel").setExecutor(new IgnoreChannel(this));
         // Nick
         getCommand("nick").setExecutor(new Nick(this));
         getCommand("resetnick").setExecutor(new ResetNick(this));
