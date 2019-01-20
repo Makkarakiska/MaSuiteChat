@@ -2,6 +2,7 @@ package fi.matiaspaavilainen.masuitechat.bukkit;
 
 import fi.matiaspaavilainen.masuitechat.bukkit.commands.Nick;
 import fi.matiaspaavilainen.masuitechat.bukkit.commands.Reply;
+import fi.matiaspaavilainen.masuitechat.bukkit.commands.Mail;
 import fi.matiaspaavilainen.masuitechat.bukkit.commands.ResetNick;
 import fi.matiaspaavilainen.masuitechat.bukkit.commands.channels.*;
 import fi.matiaspaavilainen.masuitechat.bukkit.events.ChatEvent;
