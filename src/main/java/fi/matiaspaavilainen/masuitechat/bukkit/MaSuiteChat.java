@@ -57,7 +57,7 @@ public class MaSuiteChat extends JavaPlugin implements Listener {
         getCommand("resetnick").setExecutor(new ResetNick(this));
 
         // Mail
-        //getCommand("mail").setExecutor(new Mail(this));
+        getCommand("mail").setExecutor(new Mail(this));
     }
 
     private boolean setupChat() {
