@@ -6,6 +6,7 @@ import fi.matiaspaavilainen.masuitechat.bukkit.commands.ResetNick;
 import fi.matiaspaavilainen.masuitechat.bukkit.commands.channels.*;
 import fi.matiaspaavilainen.masuitechat.bukkit.events.ChatEvent;
 import fi.matiaspaavilainen.masuitechat.bukkit.events.JoinEvent;
+import fi.matiaspaavilainen.masuitechat.bukkit.events.LeaveEvent;
 import fi.matiaspaavilainen.masuitecore.bukkit.chat.Formator;
 import fi.matiaspaavilainen.masuitecore.core.configuration.BukkitConfiguration;
 import net.milkbowl.vault.chat.Chat;
@@ -27,6 +28,7 @@ public class MaSuiteChat extends JavaPlugin implements Listener {
 
         // Load listeners
         getServer().getPluginManager().registerEvents(new JoinEvent(this), this);
+        getServer().getPluginManager().registerEvents(new LeaveEvent(this), this);
         getServer().getPluginManager().registerEvents(new ChatEvent(this), this);
         getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
         getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", new ChatMessagingChannel(this));
@@ -39,7 +41,7 @@ public class MaSuiteChat extends JavaPlugin implements Listener {
             getServer().getPluginManager().disablePlugin(this);
         }
 
-        config.load("chat", "syntax.yml").addDefault("ignore-channel", "&cCorrect syntax: /ignorechannel <global/server>");
+        config.addDefault("chat/messages.yml","ignore-channel", "&cCorrect syntax: /ignorechannel <global/server>");
     }
 
 

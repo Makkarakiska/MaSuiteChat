@@ -1,7 +1,7 @@
 package fi.matiaspaavilainen.masuitechat.bukkit.events;
 
 import fi.matiaspaavilainen.masuitechat.bukkit.MaSuiteChat;
-import fi.matiaspaavilainen.masuitecore.core.objects.PluginChannel;
+import fi.matiaspaavilainen.masuitecore.core.channels.BukkitPluginChannel;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -21,7 +21,7 @@ public class JoinEvent implements Listener {
         plugin.getServer().getScheduler().runTaskLaterAsynchronously(plugin, () -> {
             Player p = e.getPlayer();
             if (p != null) {
-                new PluginChannel(plugin, p, new Object[]{"MaSuiteChat", "SetGroup", p.getUniqueId().toString(), plugin.getPrefix(p), plugin.getSuffix(p)}).send();
+                new BukkitPluginChannel(plugin, p, new Object[]{"MaSuiteChat", "SetGroup", p.getUniqueId().toString(), plugin.getPrefix(p), plugin.getSuffix(p)}).send();
             }
         }, 10);
     }

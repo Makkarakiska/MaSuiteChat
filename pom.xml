@@ -6,7 +6,7 @@
 
     <groupId>fi.matiaspaavilainen</groupId>
     <artifactId>MaSuiteChat</artifactId>
-    <version>1.4</version>
+    <version>1.4.1.2</version>
     <distributionManagement>
         <snapshotRepository>
             <id>codemc-snapshots</id>
@@ -64,7 +64,7 @@
         <dependency>
             <groupId>fi.matiaspaavilainen</groupId>
             <artifactId>MaSuiteCore</artifactId>
-            <version>1.5-20190108.114520-5</version>
+            <version>1.5.5-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

@@ -1,6 +1,9 @@
 package fi.matiaspaavilainen.masuitechat.bungee;
 
 import fi.matiaspaavilainen.masuitechat.bungee.channels.*;
+import fi.matiaspaavilainen.masuitechat.bungee.events.JoinEvent;
+import fi.matiaspaavilainen.masuitechat.bungee.events.LeaveEvent;
+import fi.matiaspaavilainen.masuitechat.bungee.events.SwitchEvent;
 import fi.matiaspaavilainen.masuitechat.bungee.managers.MailManager;
 import fi.matiaspaavilainen.masuitechat.bungee.managers.ServerManager;
 import fi.matiaspaavilainen.masuitechat.bungee.objects.Group;
@@ -11,9 +14,7 @@ import fi.matiaspaavilainen.masuitecore.core.configuration.BungeeConfiguration;
 import fi.matiaspaavilainen.masuitecore.core.database.ConnectionManager;
 import fi.matiaspaavilainen.masuitecore.core.objects.MaSuitePlayer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
-import net.md_5.bungee.api.event.PlayerDisconnectEvent;
 import net.md_5.bungee.api.event.PluginMessageEvent;
-import net.md_5.bungee.api.event.PostLoginEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.event.EventHandler;
@@ -29,11 +30,11 @@ public class MaSuiteChat extends Plugin implements Listener {
     public static HashMap<UUID, String> players = new HashMap<>();
     public static HashMap<UUID, Group> groups = new HashMap<>();
     public static boolean luckPermsApi = false;
-    private Formator formator = new Formator();
+    public Formator formator = new Formator();
 
-    private Utils utils = new Utils();
+    public Utils utils = new Utils();
 
-    private BungeeConfiguration config = new BungeeConfiguration();
+    public BungeeConfiguration config = new BungeeConfiguration();
 
     @Override
     public void onEnable() {
@@ -64,20 +65,17 @@ public class MaSuiteChat extends Plugin implements Listener {
 
         config.addDefault("chat/messages.yml", "ignore-channel.ignore", "&cYou are now ignoring that channel!");
         config.addDefault("chat/messages.yml", "ignore-channel.unignore", "&aYou are now seeing that channel again!");
-    }
 
-    @EventHandler
-    public void onJoin(PostLoginEvent e) {
-        ProxiedPlayer p = e.getPlayer();
-        // Add player to global channel on join
-        players.put(p.getUniqueId(), "global");
-    }
+        config.addDefault("chat/messages.yml", "switch-message.enabled", true);
+        config.addDefault("chat/messages.yml", "switch-message.message", "&9%player% &7has moved to &9%server%&7!");
 
-    @EventHandler
-    public void onQuit(PlayerDisconnectEvent e) {
-        ProxiedPlayer p = e.getPlayer();
-        // Remove player from channels on leave
-        players.remove(p.getUniqueId());
+        config.addDefault("chat/messages.yml", "connection-message.enabled", true);
+        config.addDefault("chat/messages.yml", "connection-message.join", "&7[&a+&7] &9%player% &7joined!");
+        config.addDefault("chat/messages.yml", "connection-message.left", "&7[&c-&7] &9%player% &7left!");
+
+        getProxy().getPluginManager().registerListener(this, new SwitchEvent(this));
+        getProxy().getPluginManager().registerListener(this, new LeaveEvent(this));
+        getProxy().getPluginManager().registerListener(this, new JoinEvent(this));
     }
 
     @Override
@@ -216,7 +214,7 @@ public class MaSuiteChat extends Plugin implements Listener {
                     ProxiedPlayer target = getProxy().getPlayer(in.readUTF());
                     String nick = in.readUTF();
                     if (utils.isOnline(target, sender)) {
-                        target.setDisplayName(in.readUTF());
+                        target.setDisplayName(nick);
                         MaSuitePlayer msp = new MaSuitePlayer().find(target.getUniqueId());
                         msp.setNickname(nick);
                         msp.update();
