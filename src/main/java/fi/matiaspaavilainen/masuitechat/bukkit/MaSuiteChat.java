@@ -42,7 +42,7 @@ public class MaSuiteChat extends JavaPlugin implements Listener {
             getServer().getPluginManager().disablePlugin(this);
         }
 
-        config.addDefault("chat/messages.yml","ignore-channel", "&cCorrect syntax: /ignorechannel <global/server>");
+        config.addDefault("chat/syntax.yml","ignore-channel", "&cCorrect syntax: /ignorechannel <global/server>");
     }
 
 
