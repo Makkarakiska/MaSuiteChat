@@ -73,6 +73,9 @@ public class MaSuiteChat extends Plugin implements Listener {
         config.addDefault("chat/messages.yml", "connection-message.join", "&7[&a+&7] &9%player% &7joined!");
         config.addDefault("chat/messages.yml", "connection-message.left", "&7[&c-&7] &9%player% &7left!");
 
+        config.addDefault("chat/messages.yml", "motd.enabled", true);
+        config.addDefault("chat/messages.yml", "motd.message", "&7Welcome to our server, &9%player%&7!");
+
         getProxy().getPluginManager().registerListener(this, new SwitchEvent(this));
         getProxy().getPluginManager().registerListener(this, new LeaveEvent(this));
         getProxy().getPluginManager().registerListener(this, new JoinEvent(this));
