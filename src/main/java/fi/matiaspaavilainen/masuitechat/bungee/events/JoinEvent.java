@@ -1,6 +1,7 @@
 package fi.matiaspaavilainen.masuitechat.bungee.events;
 
 import fi.matiaspaavilainen.masuitechat.bungee.MaSuiteChat;
+import fi.matiaspaavilainen.masuitecore.core.objects.MaSuitePlayer;
 import net.md_5.bungee.api.event.PostLoginEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
@@ -21,6 +22,12 @@ public class JoinEvent implements Listener {
                     .replace("%player%", e.getPlayer().getName()));
         }
         MaSuiteChat.players.put(e.getPlayer().getUniqueId(), "global");
+
+        if (plugin.config.load("chat", "messages.yml").getBoolean("first-join.enabled"))
+            if (new MaSuitePlayer().find(e.getPlayer().getUniqueId()).getUniqueId() == null) {
+                plugin.utils.broadcast(plugin.config.load("chat", "messages.yml")
+                        .getString("first-join.message").replace("%player%", e.getPlayer().getName()));
+            }
 
         if (plugin.config.load("chat", "messages.yml").getBoolean("motd.enabled")) {
             plugin.formator.sendMessage(e.getPlayer(), plugin.config.load("chat", "messages.yml")

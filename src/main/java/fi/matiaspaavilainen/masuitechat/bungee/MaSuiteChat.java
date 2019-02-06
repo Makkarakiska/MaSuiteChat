@@ -76,6 +76,9 @@ public class MaSuiteChat extends Plugin implements Listener {
         config.addDefault("chat/messages.yml", "motd.enabled", true);
         config.addDefault("chat/messages.yml", "motd.message", "&7Welcome to our server, &9%player%&7!");
 
+        config.addDefault("chat/messages.yml", "first-join.enabled", true);
+        config.addDefault("chat/messages.yml", "first-join.message", "9%player%&7 has joined for the first time!");
+
         getProxy().getPluginManager().registerListener(this, new SwitchEvent(this));
         getProxy().getPluginManager().registerListener(this, new LeaveEvent(this));
         getProxy().getPluginManager().registerListener(this, new JoinEvent(this));
