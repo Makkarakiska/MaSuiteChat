@@ -13,12 +13,15 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 
+import java.util.UUID;
+
 public class AfkEvents implements Listener {
 
     private MaSuiteChat plugin;
 
     public AfkEvents(MaSuiteChat plugin) {
         this.plugin = plugin;
+        afkDetector();
     }
 
     @EventHandler
@@ -57,6 +60,7 @@ public class AfkEvents implements Listener {
 
     @EventHandler
     public void onMove(PlayerMoveEvent event) {
+
         stopAFK(event.getPlayer());
     }
 
@@ -77,5 +81,26 @@ public class AfkEvents implements Listener {
     @EventHandler
     public void onQuit(AsyncPlayerChatEvent event) {
         plugin.afkList.remove(event.getPlayer().getUniqueId());
+    }
+
+    private void afkDetector() {
+        plugin.getServer().getScheduler().runTaskTimerAsynchronously(plugin, () -> {
+            for (Player player : plugin.getServer().getOnlinePlayers()) {
+                plugin.locations.put(player.getUniqueId(), player.getLocation());
+            }
+            plugin.getServer().getScheduler().runTaskLaterAsynchronously(plugin, () -> {
+                for (UUID uuid : plugin.locations.keySet()) {
+                    Player player = plugin.getServer().getPlayer(uuid);
+                    if (player.isOnline()) {
+                        if (plugin.locations.get(uuid).equals(player.getLocation())) {
+                            if (!plugin.afkList.contains(uuid)) {
+                                new BukkitPluginChannel(plugin, player, new Object[]{"MaSuiteChat", "Afk", uuid.toString(), true}).send();
+                                plugin.afkList.add(uuid);
+                            }
+                        }
+                    }
+                }
+            }, 20 * 2);
+        }, 20 * 5, 20 * 300);
     }
 }
