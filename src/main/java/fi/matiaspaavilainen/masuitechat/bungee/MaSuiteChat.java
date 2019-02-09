@@ -79,6 +79,9 @@ public class MaSuiteChat extends Plugin implements Listener {
         config.addDefault("chat/messages.yml", "first-join.enabled", true);
         config.addDefault("chat/messages.yml", "first-join.message", "9%player%&7 has joined for the first time!");
 
+        config.addDefault("chat/messages.yml", "afk.on", "&9%player% &7is now afk.");
+        config.addDefault("chat/messages.yml", "afk.off", "&9%player% &7is no longer afk.");
+
         getProxy().getPluginManager().registerListener(this, new SwitchEvent(this));
         getProxy().getPluginManager().registerListener(this, new LeaveEvent(this));
         getProxy().getPluginManager().registerListener(this, new JoinEvent(this));
@@ -271,6 +274,19 @@ public class MaSuiteChat extends Plugin implements Listener {
                         }
                     }
                 }
+
+                if (childchannel.equals("Afk")) {
+                    ProxiedPlayer p = getProxy().getPlayer(UUID.fromString(in.readUTF()));
+                    boolean status = in.readBoolean();
+                    if (utils.isOnline(p)) {
+                        if (status) {
+                            utils.broadcast(config.load("chat", "messages.yml").getString("afk.on").replace("%player%", p.getName()));
+                        } else {
+                            utils.broadcast(config.load("chat", "messages.yml").getString("afk.off").replace("%player%", p.getName()));
+                        }
+                    }
+                }
+
             }
         }
     }
