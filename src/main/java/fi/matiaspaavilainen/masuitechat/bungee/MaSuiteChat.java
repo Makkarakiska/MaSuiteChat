@@ -90,8 +90,10 @@ public class MaSuiteChat extends Plugin implements Listener {
     @Override
     public void onLoad() {
         getProxy().getPlayers().forEach(p -> {
-            players.put(p.getUniqueId(), "global");
-            formator.sendMessage(p, config.load("chat", "messages.yml").getString("channel-changed.global"));
+            String channel = config.load("chat", "chat.yml")
+                    .getString("channels." + p.getServer().getInfo().getName().toLowerCase() + ".defaultChannel");
+            players.put(p.getUniqueId(), channel);
+            formator.sendMessage(p, config.load("chat", "messages.yml").getString("channel-changed." + channel));
         });
     }
 
