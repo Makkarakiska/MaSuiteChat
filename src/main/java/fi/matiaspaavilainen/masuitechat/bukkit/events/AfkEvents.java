@@ -91,7 +91,7 @@ public class AfkEvents implements Listener {
             plugin.getServer().getScheduler().runTaskLaterAsynchronously(plugin, () -> {
                 for (UUID uuid : plugin.locations.keySet()) {
                     Player player = plugin.getServer().getPlayer(uuid);
-                    if (player.isOnline()) {
+                    if (player != null) {
                         if (plugin.locations.get(uuid).equals(player.getLocation())) {
                             if (!plugin.afkList.contains(uuid)) {
                                 new BukkitPluginChannel(plugin, player, new Object[]{"MaSuiteChat", "Afk", uuid.toString(), true}).send();
