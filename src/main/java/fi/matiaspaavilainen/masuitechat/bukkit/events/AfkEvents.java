@@ -60,7 +60,6 @@ public class AfkEvents implements Listener {
 
     @EventHandler
     public void onMove(PlayerMoveEvent event) {
-
         stopAFK(event.getPlayer());
     }
 
@@ -81,6 +80,7 @@ public class AfkEvents implements Listener {
     @EventHandler
     public void onQuit(AsyncPlayerChatEvent event) {
         plugin.afkList.remove(event.getPlayer().getUniqueId());
+        plugin.locations.remove(event.getPlayer().getUniqueId());
     }
 
     private void afkDetector() {
