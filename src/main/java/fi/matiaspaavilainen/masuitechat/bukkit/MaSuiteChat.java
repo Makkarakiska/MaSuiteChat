@@ -34,12 +34,16 @@ public class MaSuiteChat extends JavaPlugin implements Listener {
     public void onEnable() {
 
         config.create(this, "chat", "syntax.yml");
+        config.create(this, "chat", "config.yml");
 
         // Load listeners
         getServer().getPluginManager().registerEvents(new JoinEvent(this), this);
         getServer().getPluginManager().registerEvents(new LeaveEvent(this), this);
+        if(config.load("chat", "config.yml").getBoolean("afk-listener")){
+            getServer().getPluginManager().registerEvents(new AfkEvents(this), this);
+        }
         getServer().getPluginManager().registerEvents(new ChatEvent(this), this);
-        getServer().getPluginManager().registerEvents(new AfkEvents(this), this);
+
         getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
         getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", new ChatMessagingChannel(this));
 
