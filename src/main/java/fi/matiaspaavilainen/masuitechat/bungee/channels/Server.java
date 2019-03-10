@@ -15,7 +15,7 @@ public class Server {
     public static List<UUID> ignoredChannels = new ArrayList<>();
 
     public static void sendMessage(ProxiedPlayer p, String msg) {
-        BaseComponent[] txt = Utilities.chatFormat(p, msg, "global");
+        BaseComponent[] txt = Utilities.chatFormat(p, msg, "server");
         for (ProxiedPlayer player : ProxyServer.getInstance().getServerInfo(p.getServer().getInfo().getName()).getPlayers()) {
             if (!ignoredChannels.contains(player.getUniqueId())) {
                 if(MaSuiteChat.ignores.get(player.getUniqueId()) == null){
