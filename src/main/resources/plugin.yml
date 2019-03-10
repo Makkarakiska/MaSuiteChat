@@ -44,6 +44,10 @@ commands:
     description: Ignore specific channels
     aliases: [igchannel, ignorec]
     permission: masuitechat.channel.ignore.channel
+  ignore:
+    description: Ignore specific player
+    aliases: [igplayer, ignorep]
+    permission: masuitechat.channel.ignore.player
   afk:
     description: Toggles AFK state
     aliases: [awayfromkeyboard]

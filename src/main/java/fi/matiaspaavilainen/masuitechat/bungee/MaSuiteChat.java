@@ -22,12 +22,12 @@ import net.md_5.bungee.event.EventHandler;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.UUID;
+import java.util.*;
 
 public class MaSuiteChat extends Plugin implements Listener {
 
     public static HashMap<UUID, String> players = new HashMap<>();
+    public static HashMap<UUID, Set<UUID>> ignores = new HashMap<>();
     public static HashMap<UUID, Group> groups = new HashMap<>();
     public static boolean luckPermsApi = false;
     public Formator formator = new Formator();
@@ -81,6 +81,9 @@ public class MaSuiteChat extends Plugin implements Listener {
 
         config.addDefault("chat/messages.yml", "afk.on", "&9%player% &7is now afk.");
         config.addDefault("chat/messages.yml", "afk.off", "&9%player% &7is no longer afk.");
+
+        config.addDefault("chat/messages.yml", "ignore.on", "&aYou are now ignoring %player%.");
+        config.addDefault("chat/messages.yml", "ignore.off", "&cYou are not ignoring %player% anymore.");
 
         getProxy().getPluginManager().registerListener(this, new SwitchEvent(this));
         getProxy().getPluginManager().registerListener(this, new LeaveEvent(this));
@@ -258,19 +261,19 @@ public class MaSuiteChat extends Plugin implements Listener {
                     ProxiedPlayer p = getProxy().getPlayer(UUID.fromString(in.readUTF()));
                     if (utils.isOnline(p)) {
                         if (c.equals("global")) {
-                            if (Global.ignores.contains(p.getUniqueId())) {
-                                Global.ignores.remove(p.getUniqueId());
+                            if (Global.ignoredChannels.contains(p.getUniqueId())) {
+                                Global.ignoredChannels.remove(p.getUniqueId());
                                 formator.sendMessage(p, config.load("chat", "messages.yml").getString("ignore-channel.unignore"));
                             } else {
-                                Global.ignores.add(p.getUniqueId());
+                                Global.ignoredChannels.add(p.getUniqueId());
                                 formator.sendMessage(p, config.load("chat", "messages.yml").getString("ignore-channel.ignore"));
                             }
                         } else if (c.equals("server")) {
-                            if (Server.ignores.contains(p.getUniqueId())) {
-                                Server.ignores.remove(p.getUniqueId());
+                            if (Server.ignoredChannels.contains(p.getUniqueId())) {
+                                Server.ignoredChannels.remove(p.getUniqueId());
                                 formator.sendMessage(p, config.load("chat", "messages.yml").getString("ignore-channel.unignore"));
                             } else {
-                                Server.ignores.add(p.getUniqueId());
+                                Server.ignoredChannels.add(p.getUniqueId());
                                 formator.sendMessage(p, config.load("chat", "messages.yml").getString("ignore-channel.ignore"));
                             }
                         }
@@ -289,6 +292,22 @@ public class MaSuiteChat extends Plugin implements Listener {
                     }
                 }
 
+                if(childchannel.equals("IgnorePlayer")){
+                    ProxiedPlayer sender = getProxy().getPlayer(UUID.fromString(in.readUTF()));
+                    ProxiedPlayer target = getProxy().getPlayer(in.readUTF());
+                    if(utils.isOnline(target, sender)){
+                        if (ignores.containsKey(sender.getUniqueId())) {
+                            ignores.get(sender.getUniqueId()).remove(target.getUniqueId());
+                            formator.sendMessage(sender, config.load("chat", "messages.yml").getString("ignore.off").replace("%player%", target.getName()));
+                        } else {
+                            if(!ignores.containsKey(sender.getUniqueId())){
+                                ignores.put(sender.getUniqueId(), new HashSet<>());
+                            }
+                            ignores.get(sender.getUniqueId()).add(target.getUniqueId());
+                            formator.sendMessage(sender, config.load("chat", "messages.yml").getString("ignore.on").replace("%player%", target.getName()));
+                        }
+                    }
+                }
             }
         }
     }

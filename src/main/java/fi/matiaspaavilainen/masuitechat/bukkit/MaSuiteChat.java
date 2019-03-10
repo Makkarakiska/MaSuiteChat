@@ -51,11 +51,12 @@ public class MaSuiteChat extends JavaPlugin implements Listener {
 
         setupChat();
         if (chat == null) {
-            System.out.println("[MaSuite] [Chat] Vault not found... Disabling...");
+            System.out.println("[MaSuite] [Chat] Vault chat hook not found... Disabling...");
             getServer().getPluginManager().disablePlugin(this);
         }
 
         config.addDefault("chat/syntax.yml", "ignore-channel", "&cCorrect syntax: /ignorechannel <global/server>");
+        config.addDefault("chat/syntax.yml", "ignore", "&cCorrect syntax: /ignore <player>");
     }
 
 
@@ -77,6 +78,9 @@ public class MaSuiteChat extends JavaPlugin implements Listener {
 
         //Afk
         getCommand("afk").setExecutor(new Afk(this));
+
+        // Ignore player
+        getCommand("ignore").setExecutor(new Ignore(this));
     }
 
     private boolean setupChat() {

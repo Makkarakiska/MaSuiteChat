@@ -1,5 +1,6 @@
 package fi.matiaspaavilainen.masuitechat.bungee.channels;
 
+import fi.matiaspaavilainen.masuitechat.bungee.MaSuiteChat;
 import fi.matiaspaavilainen.masuitechat.bungee.Utilities;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -10,11 +11,12 @@ import java.util.UUID;
 
 public class Server {
 
-    public static List<UUID> ignores = new ArrayList<>();
+    public static List<UUID> ignoredChannels = new ArrayList<>();
 
     public static void sendMessage(ProxiedPlayer p, String msg) {
         for (ProxiedPlayer player : ProxyServer.getInstance().getServerInfo(p.getServer().getInfo().getName()).getPlayers()) {
-            if (!ignores.contains(player.getUniqueId())) {
+            if (!ignoredChannels.contains(player.getUniqueId()) && (MaSuiteChat.ignores.get(player.getUniqueId()) != null &&
+                    !MaSuiteChat.ignores.get(player.getUniqueId()).contains(p.getUniqueId()))) {
                 player.sendMessage(Utilities.chatFormat(p, msg, "server"));
             }
         }
