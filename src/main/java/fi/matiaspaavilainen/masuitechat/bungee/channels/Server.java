@@ -14,11 +14,19 @@ public class Server {
     public static List<UUID> ignoredChannels = new ArrayList<>();
 
     public static void sendMessage(ProxiedPlayer p, String msg) {
+        BaseComponent[] txt = Utilities.chatFormat(p, msg, "global");
         for (ProxiedPlayer player : ProxyServer.getInstance().getServerInfo(p.getServer().getInfo().getName()).getPlayers()) {
-            if (!ignoredChannels.contains(player.getUniqueId()) && (MaSuiteChat.ignores.get(player.getUniqueId()) != null &&
-                    !MaSuiteChat.ignores.get(player.getUniqueId()).contains(p.getUniqueId()))) {
-                player.sendMessage(Utilities.chatFormat(p, msg, "server"));
+            if (!ignoredChannels.contains(player.getUniqueId())) {
+                if(MaSuiteChat.ignores.get(player.getUniqueId()) == null){
+                    player.sendMessage(txt);
+                } else if(!MaSuiteChat.ignores.get(player.getUniqueId()).contains(p.getUniqueId())){
+                    player.sendMessage(txt);
+                }
             }
+          
+
+
+
         }
     }
 }
