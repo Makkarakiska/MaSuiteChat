@@ -100,6 +100,10 @@ public class MaSuiteChat extends Plugin implements Listener {
         });
     }
 
+    private void chatLog(String channel, String sender, String message) {
+        System.out.println("[Chat] [" + channel + "] " + sender + " > " + message);
+    }
+
     @EventHandler
     public void onPluginMessage(PluginMessageEvent e) throws IOException {
         BungeeConfiguration config = new BungeeConfiguration();
@@ -116,19 +120,23 @@ public class MaSuiteChat extends Plugin implements Listener {
                         return;
                     }
                     if (players.containsKey(p.getUniqueId())) {
+                        String msg = in.readUTF();
                         switch (players.get(p.getUniqueId())) {
                             case ("staff"):
                                 Staff.sendMessage(p, in.readUTF());
+                                chatLog("STAFF", p.getName(), msg);
                                 break;
                             case ("global"):
-                                Global.sendMessage(p, in.readUTF());
+                                Global.sendMessage(p, msg);
+                                chatLog("GLOBAL", p.getName(), msg);
                                 break;
                             case ("server"):
-                                Server.sendMessage(p, in.readUTF());
+                                Server.sendMessage(p, msg);
+                                chatLog("SERVER", p.getName(), msg);
                                 break;
                             case ("local"):
-                                String msg = in.readUTF();
                                 localChannel.send(p, msg);
+                                chatLog("LOCAL", p.getName(), msg);
                                 break;
                         }
                     }
@@ -166,15 +174,19 @@ public class MaSuiteChat extends Plugin implements Listener {
                         switch (channel) {
                             case ("staff"):
                                 Staff.sendMessage(p, value);
+                                chatLog("STAFF", p.getName(), value);
                                 break;
                             case ("global"):
                                 Global.sendMessage(p, value);
+                                chatLog("GLOBAL", p.getName(), value);
                                 break;
                             case ("server"):
                                 Server.sendMessage(p, value);
+                                chatLog("SERVER", p.getName(), value);
                                 break;
                             case ("local"):
                                 localChannel.send(p, value);
+                                chatLog("LOCAL", p.getName(), value);
                                 break;
                             case ("private"):
                                 ProxiedPlayer receiver = getProxy().getPlayer(value);
@@ -292,15 +304,15 @@ public class MaSuiteChat extends Plugin implements Listener {
                     }
                 }
 
-                if(childchannel.equals("IgnorePlayer")){
+                if (childchannel.equals("IgnorePlayer")) {
                     ProxiedPlayer sender = getProxy().getPlayer(UUID.fromString(in.readUTF()));
                     ProxiedPlayer target = getProxy().getPlayer(in.readUTF());
-                    if(utils.isOnline(target, sender)){
+                    if (utils.isOnline(target, sender)) {
                         if (ignores.containsKey(sender.getUniqueId())) {
                             ignores.get(sender.getUniqueId()).remove(target.getUniqueId());
                             formator.sendMessage(sender, config.load("chat", "messages.yml").getString("ignore.off").replace("%player%", target.getName()));
                         } else {
-                            if(!ignores.containsKey(sender.getUniqueId())){
+                            if (!ignores.containsKey(sender.getUniqueId())) {
                                 ignores.put(sender.getUniqueId(), new HashSet<>());
                             }
                             ignores.get(sender.getUniqueId()).add(target.getUniqueId());
