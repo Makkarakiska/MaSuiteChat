@@ -1,7 +1,7 @@
 package fi.matiaspaavilainen.masuitechat.bukkit.commands.channels;
 
 import fi.matiaspaavilainen.masuitechat.bukkit.MaSuiteChat;
-import fi.matiaspaavilainen.masuitecore.core.objects.PluginChannel;
+import fi.matiaspaavilainen.masuitecore.core.channels.BukkitPluginChannel;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -27,7 +27,7 @@ public class Private implements CommandExecutor {
             for (i = 1; i < args.length; i++) {
                 msg.append(args[i]).append(" ");
             }
-            new PluginChannel(plugin, p, new Object[]{"MaSuiteChat", "SendMessage", "private", p.getUniqueId().toString(), args[0], msg.toString()}).send();
+            new BukkitPluginChannel(plugin, p, new Object[]{"MaSuiteChat", "SendMessage", "private", p.getUniqueId().toString(), args[0], msg.toString()}).send();
         } else {
            plugin.formator.sendMessage(p, plugin.config.load("chat", "syntax.yml").getString("private.send"));
         }
