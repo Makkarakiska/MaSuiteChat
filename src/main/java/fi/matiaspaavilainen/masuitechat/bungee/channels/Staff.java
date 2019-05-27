@@ -18,14 +18,17 @@ public class Staff {
             ServerInfo serverInfo = entry.getValue();
             serverInfo.ping((result, error) -> {
                 if (error == null) {
-                    try (ByteArrayOutputStream b = new ByteArrayOutputStream();
-                         DataOutputStream out = new DataOutputStream(b)) {
-                        out.writeUTF("StaffChat");
-                        out.writeUTF(ComponentSerializer.toString(Utilities.chatFormat(p, msg, "staff")));
-                        serverInfo.sendData("BungeeCord", b.toByteArray());
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                    if (serverInfo.getPlayers().size() > 0) {
+                        try (ByteArrayOutputStream b = new ByteArrayOutputStream();
+                             DataOutputStream out = new DataOutputStream(b)) {
+                            out.writeUTF("StaffChat");
+                            out.writeUTF(ComponentSerializer.toString(Utilities.chatFormat(p, msg, "staff")));
+                            serverInfo.sendData("BungeeCord", b.toByteArray());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
+
 
                 }
             });
