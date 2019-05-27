@@ -123,7 +123,7 @@ public class MaSuiteChat extends Plugin implements Listener {
                         String msg = in.readUTF();
                         switch (players.get(p.getUniqueId())) {
                             case ("staff"):
-                                Staff.sendMessage(p, in.readUTF());
+                                Staff.sendMessage(p, msg);
                                 chatLog("STAFF", p.getName(), msg);
                                 break;
                             case ("global"):
