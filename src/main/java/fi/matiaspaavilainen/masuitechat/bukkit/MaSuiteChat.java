@@ -51,7 +51,7 @@ public class MaSuiteChat extends JavaPlugin implements Listener {
 
         setupChat();
         if (chat == null) {
-            System.out.println("[MaSuite] [Chat] Vault chat hook not found... Disabling...");
+            System.out.println("[MaSuite] [Chat] Vault chat hook not found (Does your permission plugin support Vault?)... Disabling...");
             getServer().getPluginManager().disablePlugin(this);
         }
 
