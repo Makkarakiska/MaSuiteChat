@@ -1,13 +1,16 @@
 package fi.matiaspaavilainen.masuitechat.bungee.objects;
 
 import fi.matiaspaavilainen.masuitechat.bungee.MaSuiteChat;
-import me.lucko.luckperms.LuckPerms;
-import me.lucko.luckperms.api.Contexts;
-import me.lucko.luckperms.api.LuckPermsApi;
-import me.lucko.luckperms.api.User;
+import net.luckperms.api.LuckPerms;
+import net.luckperms.api.LuckPermsProvider;
+import net.luckperms.api.context.Context;
+import net.luckperms.api.model.user.User;
+import net.luckperms.api.query.QueryOptions;
+import net.md_5.bungee.api.ProxyServer;
 
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
 public class Group {
 
@@ -45,14 +48,20 @@ public class Group {
      */
     public Group get(UUID uuid) {
         if (MaSuiteChat.luckPermsApi) {
-            LuckPermsApi api = LuckPerms.getApi();
-            User user = api.getUser(uuid);
+            LuckPerms api = LuckPermsProvider.get();
+            if (ProxyServer.getInstance().getPlayer(uuid) == null) {
+                api.getUserManager().loadUser(uuid);
+            }
+            User user = null;
+            try {
+                user = api.getUserManager().loadUser(uuid).get();
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
             if (user != null) {
-                Optional<Contexts> contexts = api.getContextForUser(user);
-                if (!contexts.isPresent()) return null;
                 this.uuid = uuid;
-                this.prefix = user.getCachedData().getMetaData(contexts.get()).getPrefix();
-                this.suffix = user.getCachedData().getMetaData(contexts.get()).getSuffix();
+                this.prefix = user.getCachedData().getMetaData(QueryOptions.defaultContextualOptions()).getPrefix();
+                this.suffix = user.getCachedData().getMetaData(QueryOptions.defaultContextualOptions()).getSuffix();
                 return this;
             }
         } else {
