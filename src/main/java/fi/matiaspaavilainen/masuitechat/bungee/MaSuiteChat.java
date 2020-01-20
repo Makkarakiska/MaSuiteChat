@@ -4,15 +4,14 @@ import fi.matiaspaavilainen.masuitechat.bungee.channels.*;
 import fi.matiaspaavilainen.masuitechat.bungee.events.JoinEvent;
 import fi.matiaspaavilainen.masuitechat.bungee.events.LeaveEvent;
 import fi.matiaspaavilainen.masuitechat.bungee.events.SwitchEvent;
-import fi.matiaspaavilainen.masuitechat.bungee.managers.MailManager;
 import fi.matiaspaavilainen.masuitechat.bungee.managers.ServerManager;
 import fi.matiaspaavilainen.masuitechat.bungee.objects.Group;
 import fi.matiaspaavilainen.masuitecore.bungee.Utils;
 import fi.matiaspaavilainen.masuitecore.bungee.chat.Formator;
 import fi.matiaspaavilainen.masuitecore.core.Updator;
+import fi.matiaspaavilainen.masuitecore.core.api.MaSuiteCoreAPI;
 import fi.matiaspaavilainen.masuitecore.core.configuration.BungeeConfiguration;
-import fi.matiaspaavilainen.masuitecore.core.database.ConnectionManager;
-import fi.matiaspaavilainen.masuitecore.core.objects.MaSuitePlayer;
+import fi.matiaspaavilainen.masuitecore.core.models.MaSuitePlayer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.PluginMessageEvent;
 import net.md_5.bungee.api.plugin.Listener;
@@ -22,7 +21,10 @@ import net.md_5.bungee.event.EventHandler;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 
 public class MaSuiteChat extends Plugin implements Listener {
 
@@ -36,6 +38,8 @@ public class MaSuiteChat extends Plugin implements Listener {
 
     public BungeeConfiguration config = new BungeeConfiguration();
 
+    public MaSuiteCoreAPI api = new MaSuiteCoreAPI();
+
     @Override
     public void onEnable() {
         getProxy().getPluginManager().registerListener(this, this);
@@ -44,21 +48,10 @@ public class MaSuiteChat extends Plugin implements Listener {
         config.create(this, "chat", "messages.yml");
         config.create(this, "chat", "chat.yml");
 
-        // Database
-        ConnectionManager.db.createTable("mail", "(" +
-                "id INT(10) UNSIGNED PRIMARY KEY AUTO_INCREMENT, " +
-                "sender VARCHAR(36) NOT NULL, " +
-                "receiver VARCHAR(36) NOT NULL, " +
-                "message LONGTEXT NOT NULL, " +
-                "seen TINYINT(1) NOT NULL DEFAULT '0', " +
-                "timestamp BIGINT(16) NOT NULL" +
-                ");");
-
-
-        // Load actions, servers and channels
+         // Load actions, servers and channels
         ServerManager.loadServers();
 
-        new Updator(new String[]{getDescription().getVersion(), getDescription().getName(), "60039"}).checkUpdates();
+        new Updator(getDescription().getVersion(), getDescription().getName(), "60039").checkUpdates();
         if (getProxy().getPluginManager().getPlugin("LuckPerms") != null) {
             luckPermsApi = true;
         }
@@ -206,7 +199,7 @@ public class MaSuiteChat extends Plugin implements Listener {
                     }
 
                 }
-                if (childchannel.equals("Mail")) {
+                /*if (childchannel.equals("Mail")) {
                     String superchildchannel = in.readUTF();
                     MailManager mm = new MailManager();
                     switch (superchildchannel) {
@@ -221,16 +214,16 @@ public class MaSuiteChat extends Plugin implements Listener {
                             break;
                     }
 
-                }
+                }*/
 
                 if (childchannel.equals("Nick")) {
                     ProxiedPlayer sender = getProxy().getPlayer(UUID.fromString(in.readUTF()));
                     String nick = in.readUTF();
                     if (utils.isOnline(sender)) {
                         sender.setDisplayName(nick);
-                        MaSuitePlayer msp = new MaSuitePlayer().find(sender.getUniqueId());
+                        MaSuitePlayer msp = api.getPlayerService().getPlayer(sender.getUniqueId());
                         msp.setNickname(nick);
-                        msp.update();
+                        api.getPlayerService().updatePlayer(msp);
                         formator.sendMessage(sender, config.load("chat", "messages.yml").getString("nickname-changed").replace("%nickname%", nick));
                     }
                 }
@@ -241,9 +234,9 @@ public class MaSuiteChat extends Plugin implements Listener {
                     String nick = in.readUTF();
                     if (utils.isOnline(target, sender)) {
                         target.setDisplayName(nick);
-                        MaSuitePlayer msp = new MaSuitePlayer().find(target.getUniqueId());
+                        MaSuitePlayer msp = api.getPlayerService().getPlayer(target.getUniqueId());
                         msp.setNickname(nick);
-                        msp.update();
+                        api.getPlayerService().updatePlayer(msp);
                         formator.sendMessage(sender, config.load("chat", "messages.yml").getString("nickname-changed").replace("%nickname%", nick));
                     }
 
@@ -326,10 +319,9 @@ public class MaSuiteChat extends Plugin implements Listener {
 
     private void updateNick(BungeeConfiguration config, ProxiedPlayer target) {
         target.setDisplayName(target.getName());
-        MaSuitePlayer msp = new MaSuitePlayer();
-        msp = msp.find(target.getUniqueId());
+        MaSuitePlayer msp = api.getPlayerService().getPlayer(target.getUniqueId());
         msp.setNickname(null);
-        msp.update();
+        api.getPlayerService().updatePlayer(msp);
         formator.sendMessage(target, config.load("chat", "messages.yml").getString("nickname-changed").replace("%nickname%", target.getName()));
     }
 }

@@ -1,7 +1,7 @@
 package fi.matiaspaavilainen.masuitechat.bukkit.events;
 
 import fi.matiaspaavilainen.masuitechat.bukkit.MaSuiteChat;
-import fi.matiaspaavilainen.masuitecore.core.objects.PluginChannel;
+import fi.matiaspaavilainen.masuitecore.core.channels.BukkitPluginChannel;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -18,6 +18,6 @@ public class ChatEvent implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onMessage(AsyncPlayerChatEvent e) {
         e.setCancelled(true);
-        new PluginChannel(plugin, e.getPlayer(), new Object[]{"MaSuiteChat", "Chat", e.getPlayer().getUniqueId().toString(), e.getMessage()}).send();
+        new BukkitPluginChannel(plugin, e.getPlayer(), "MaSuiteChat", "Chat", e.getPlayer().getUniqueId().toString(), e.getMessage()).send();
     }
 }

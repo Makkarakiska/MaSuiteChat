@@ -20,9 +20,7 @@ public class JoinEvent implements Listener {
         e.setJoinMessage(null);
         plugin.getServer().getScheduler().runTaskLaterAsynchronously(plugin, () -> {
             Player p = e.getPlayer();
-            if (p != null) {
-                new BukkitPluginChannel(plugin, p, new Object[]{"MaSuiteChat", "SetGroup", p.getUniqueId().toString(), plugin.getPrefix(p), plugin.getSuffix(p)}).send();
-            }
+            new BukkitPluginChannel(plugin, p, "MaSuiteChat", "SetGroup", p.getUniqueId().toString(), plugin.getPrefix(p), plugin.getSuffix(p)).send();
         }, 10);
     }
 }

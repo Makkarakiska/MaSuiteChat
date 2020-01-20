@@ -4,12 +4,14 @@ import fi.matiaspaavilainen.masuitechat.bungee.objects.Group;
 import fi.matiaspaavilainen.masuitecore.bungee.chat.Formator;
 import fi.matiaspaavilainen.masuitecore.bungee.chat.MDChat;
 import fi.matiaspaavilainen.masuitecore.core.configuration.BungeeConfiguration;
-import fi.matiaspaavilainen.masuitecore.core.utils.Date;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class Utilities {
 
@@ -38,6 +40,6 @@ public class Utilities {
         return new ComponentBuilder(message).event(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                 new ComponentBuilder(formator.colorize(config.load("chat", "messages.yml")
                         .getString("message-hover-actions")
-                        .replace("%timestamp%", new Date().getDate(new java.util.Date())))).create())).create();
+                        .replace("%timestamp%", new SimpleDateFormat("HH:mm:ss").format(new Date())))).create())).create();
     }
 }

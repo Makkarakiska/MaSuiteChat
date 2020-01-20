@@ -4,16 +4,14 @@ import fi.matiaspaavilainen.masuitechat.bungee.objects.Mail;
 import fi.matiaspaavilainen.masuitecore.bungee.Utils;
 import fi.matiaspaavilainen.masuitecore.bungee.chat.Formator;
 import fi.matiaspaavilainen.masuitecore.core.configuration.BungeeConfiguration;
-import fi.matiaspaavilainen.masuitecore.core.objects.MaSuitePlayer;
+import fi.matiaspaavilainen.masuitecore.core.models.MaSuitePlayer;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
-import java.util.Set;
-import java.util.StringJoiner;
 
 public class MailManager {
 
-    private BungeeConfiguration config = new BungeeConfiguration();
+    /*private BungeeConfiguration config = new BungeeConfiguration();
     private Formator formator = new Formator();
     private Utils utils = new Utils();
 
@@ -80,5 +78,5 @@ public class MailManager {
 
             formator.sendMessage(receiver, joiner.toString());
         }
-    }
+    }*/
 }

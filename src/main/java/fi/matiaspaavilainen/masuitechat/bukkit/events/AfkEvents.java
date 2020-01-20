@@ -42,7 +42,7 @@ public class AfkEvents implements Listener {
     @EventHandler
     public void onCommand(PlayerCommandPreprocessEvent event) {
         if (plugin.afkList.contains(event.getPlayer().getUniqueId()) && !event.getMessage().contains("/afk")) {
-            new BukkitPluginChannel(plugin, event.getPlayer(), new Object[]{"MaSuiteChat", "Afk", event.getPlayer().getUniqueId().toString(), false}).send();
+            new BukkitPluginChannel(plugin, event.getPlayer(), "MaSuiteChat", "Afk", event.getPlayer().getUniqueId().toString(), false).send();
             plugin.afkList.remove(event.getPlayer().getUniqueId());
         }
     }
@@ -51,7 +51,7 @@ public class AfkEvents implements Listener {
     public void onAttack(EntityDamageByEntityEvent event) {
         if (event.getDamager() instanceof Player) {
             if (plugin.afkList.contains(event.getDamager().getUniqueId())) {
-                new BukkitPluginChannel(plugin, (Player) event.getDamager(), new Object[]{"MaSuiteChat", "Afk", event.getDamager().getUniqueId().toString(), false}).send();
+                new BukkitPluginChannel(plugin, (Player) event.getDamager(), "MaSuiteChat", "Afk", event.getDamager().getUniqueId().toString(), false).send();
                 plugin.afkList.remove(event.getDamager().getUniqueId());
             }
         }
@@ -65,7 +65,7 @@ public class AfkEvents implements Listener {
 
     private void stopAFK(Player player) {
         if (plugin.afkList.contains(player.getUniqueId())) {
-            new BukkitPluginChannel(plugin, player, new Object[]{"MaSuiteChat", "Afk", player.getUniqueId().toString(), false}).send();
+            new BukkitPluginChannel(plugin, player, "MaSuiteChat", "Afk", player.getUniqueId().toString(), false).send();
             plugin.afkList.remove(player.getUniqueId());
         }
     }
@@ -73,7 +73,7 @@ public class AfkEvents implements Listener {
     @EventHandler
     public void onChat(AsyncPlayerChatEvent event) {
         if (plugin.afkList.contains(event.getPlayer().getUniqueId())) {
-            new BukkitPluginChannel(plugin, event.getPlayer(), new Object[]{"MaSuiteChat", "Afk", event.getPlayer().getUniqueId().toString(), false}).send();
+            new BukkitPluginChannel(plugin, event.getPlayer(), "MaSuiteChat", "Afk", event.getPlayer().getUniqueId().toString(), false).send();
         }
     }
 
@@ -94,7 +94,7 @@ public class AfkEvents implements Listener {
                     if (player != null) {
                         if (plugin.locations.get(uuid).equals(player.getLocation())) {
                             if (!plugin.afkList.contains(uuid)) {
-                                new BukkitPluginChannel(plugin, player, new Object[]{"MaSuiteChat", "Afk", uuid.toString(), true}).send();
+                                new BukkitPluginChannel(plugin, player, "MaSuiteChat", "Afk", uuid.toString(), true).send();
                                 plugin.afkList.add(uuid);
                             }
                         }

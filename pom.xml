@@ -6,7 +6,7 @@
 
     <groupId>fi.matiaspaavilainen</groupId>
     <artifactId>MaSuiteChat</artifactId>
-    <version>1.4.1.2</version>
+    <version>2.0.0</version>
     <distributionManagement>
         <snapshotRepository>
             <id>codemc-snapshots</id>
@@ -51,20 +51,20 @@
         <dependency>
             <groupId>net.md-5</groupId>
             <artifactId>bungeecord-api</artifactId>
-            <version>1.14-SNAPSHOT</version>
+            <version>1.15-SNAPSHOT</version>
             <type>jar</type>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.14.4-R0.1-SNAPSHOT</version>
+            <version>1.15.1-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>fi.matiaspaavilainen</groupId>
             <artifactId>MaSuiteCore</artifactId>
-            <version>1.5.5-SNAPSHOT</version>
+            <version>2.0-20200119.101201-16</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

@@ -1,17 +1,8 @@
 package fi.matiaspaavilainen.masuitechat.bungee.objects;
 
-import fi.matiaspaavilainen.masuitecore.core.database.ConnectionManager;
-import fi.matiaspaavilainen.masuitecore.core.database.Database;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
 
 public class Mail {
+    /*
     private Database db = ConnectionManager.db;
     private Connection connection = null;
     private PreparedStatement statement = null;
@@ -190,4 +181,5 @@ public class Mail {
     public void setId(int id) {
         this.id = id;
     }
+    */
 }

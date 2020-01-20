@@ -3,12 +3,10 @@ package fi.matiaspaavilainen.masuitechat.bungee.objects;
 import fi.matiaspaavilainen.masuitechat.bungee.MaSuiteChat;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
-import net.luckperms.api.context.Context;
 import net.luckperms.api.model.user.User;
 import net.luckperms.api.query.QueryOptions;
 import net.md_5.bungee.api.ProxyServer;
 
-import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 

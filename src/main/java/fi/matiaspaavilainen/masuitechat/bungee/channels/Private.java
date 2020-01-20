@@ -5,12 +5,13 @@ import fi.matiaspaavilainen.masuitecore.bungee.Utils;
 import fi.matiaspaavilainen.masuitecore.bungee.chat.Formator;
 import fi.matiaspaavilainen.masuitecore.bungee.chat.MDChat;
 import fi.matiaspaavilainen.masuitecore.core.configuration.BungeeConfiguration;
-import fi.matiaspaavilainen.masuitecore.core.utils.Date;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -73,7 +74,7 @@ public class Private {
         HoverEvent he = new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                 new ComponentBuilder(formator.colorize(config.load("chat", "messages.yml")
                         .getString("message-hover-actions")
-                        .replace("%timestamp%", new Date().getDate(new java.util.Date())))).create());
+                        .replace("%timestamp%", new SimpleDateFormat("HH:mm:ss").format(new Date())))).create());
         if (sender.hasPermission("masuitechat.chat.colors")) {
             sender.sendMessage(new ComponentBuilder(MDChat.getMessageFromString(senderFormat)).event(he).create());
             receiver.sendMessage(new ComponentBuilder(MDChat.getMessageFromString(receiverFormat)).event(he).create());

@@ -1,13 +1,14 @@
 package fi.matiaspaavilainen.masuitechat.bukkit;
 
 import fi.matiaspaavilainen.masuitechat.bukkit.commands.*;
-import fi.matiaspaavilainen.masuitechat.bukkit.commands.channels.*;
 import fi.matiaspaavilainen.masuitechat.bukkit.events.AfkEvents;
 import fi.matiaspaavilainen.masuitechat.bukkit.events.ChatEvent;
 import fi.matiaspaavilainen.masuitechat.bukkit.events.JoinEvent;
 import fi.matiaspaavilainen.masuitechat.bukkit.events.LeaveEvent;
+import fi.matiaspaavilainen.masuitecore.acf.PaperCommandManager;
 import fi.matiaspaavilainen.masuitecore.bukkit.chat.Formator;
 import fi.matiaspaavilainen.masuitecore.core.configuration.BukkitConfiguration;
+import fi.matiaspaavilainen.masuitecore.core.utils.CommandManagerUtil;
 import net.milkbowl.vault.chat.Chat;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -32,14 +33,12 @@ public class MaSuiteChat extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
-
-        config.create(this, "chat", "syntax.yml");
         config.create(this, "chat", "config.yml");
 
         // Load listeners
         getServer().getPluginManager().registerEvents(new JoinEvent(this), this);
         getServer().getPluginManager().registerEvents(new LeaveEvent(this), this);
-        if(config.load("chat", "config.yml").getBoolean("afk-listener")){
+        if (config.load("chat", "config.yml").getBoolean("afk-listener")) {
             getServer().getPluginManager().registerEvents(new AfkEvents(this), this);
         }
         getServer().getPluginManager().registerEvents(new ChatEvent(this), this);
@@ -49,38 +48,25 @@ public class MaSuiteChat extends JavaPlugin implements Listener {
 
         registerCommands();
 
+
         setupChat();
         if (chat == null) {
             System.out.println("[MaSuite] [Chat] Vault chat hook not found (Does your permission plugin support Vault?)... Disabling...");
             getServer().getPluginManager().disablePlugin(this);
         }
-
-        config.addDefault("chat/syntax.yml", "ignore-channel", "&cCorrect syntax: /ignorechannel <global/server>");
-        config.addDefault("chat/syntax.yml", "ignore", "&cCorrect syntax: /ignore <player>");
     }
 
 
     private void registerCommands() {
-        // Channels
-        getCommand("staff").setExecutor(new Staff(this));
-        getCommand("global").setExecutor(new Global(this));
-        getCommand("server").setExecutor(new Server(this));
-        getCommand("local").setExecutor(new Local(this));
-        getCommand("tell").setExecutor(new Private(this));
-        getCommand("reply").setExecutor(new Reply(this));
-        getCommand("ignorechannel").setExecutor(new IgnoreChannel(this));
-        // Nick
-        getCommand("nick").setExecutor(new Nick(this));
-        getCommand("resetnick").setExecutor(new ResetNick(this));
-
-        // Mail
-        getCommand("mail").setExecutor(new Mail(this));
-
-        //Afk
-        getCommand("afk").setExecutor(new Afk(this));
-
-        // Ignore player
-        getCommand("ignore").setExecutor(new Ignore(this));
+        PaperCommandManager manager = new PaperCommandManager(this);
+        manager.registerCommand(new AfkCommand(this));
+        manager.registerCommand(new ChannelCommands(this));
+        manager.registerCommand(new IgnoreCommand(this));
+        manager.registerCommand(new NickCommand(this));
+        manager.registerCommand(new PrivateMessageCommand(this));
+        manager.registerCommand(new ReplyCommand(this));
+        manager.registerCommand(new MailCommand(this));
+        CommandManagerUtil.registerMaSuitePlayerCommandCompletion(manager);
     }
 
     private boolean setupChat() {
