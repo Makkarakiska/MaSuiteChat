@@ -46,9 +46,9 @@ public class MailService {
         entityManager.getTransaction().commit();
 
         // Remove home from list and add new back
-        List<Mail> homeList = mails.get(mail.getReceiver()).stream().filter(cachedMail -> cachedMail.getId() != mail.getId()).collect(Collectors.toList());
-        homeList.add(mail);
-        mails.put(mail.getReceiver(), homeList);
+        List<Mail> mailList = mails.get(mail.getReceiver()).stream().filter(cachedMail -> cachedMail.getId() != mail.getId()).collect(Collectors.toList());
+        mailList.add(mail);
+        mails.put(mail.getReceiver(), mailList);
         return mail;
     }
 
