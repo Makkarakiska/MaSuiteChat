@@ -1,5 +1,5 @@
 name: MaSuiteChat
-main: fi.matiaspaavilainen.masuitechat.bukkit.MaSuiteChat
+main: dev.masa.masuitechat.bukkit.MaSuiteChat
 version: ${project.version}
 author: Masagameplay
 depend: [Vault, MaSuiteCore]
