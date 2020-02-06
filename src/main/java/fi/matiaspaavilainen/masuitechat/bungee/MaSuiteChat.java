@@ -1,5 +1,7 @@
 package fi.matiaspaavilainen.masuitechat.bungee;
 
+import fi.matiaspaavilainen.masuitechat.core.controllers.MailController;
+import fi.matiaspaavilainen.masuitechat.core.services.MailService;
 import fi.matiaspaavilainen.masuitechat.bungee.channels.*;
 import fi.matiaspaavilainen.masuitechat.bungee.events.JoinEvent;
 import fi.matiaspaavilainen.masuitechat.bungee.events.LeaveEvent;
@@ -40,6 +42,8 @@ public class MaSuiteChat extends Plugin implements Listener {
 
     public MaSuiteCoreAPI api = new MaSuiteCoreAPI();
 
+    public MailService mailService;
+
     @Override
     public void onEnable() {
         getProxy().getPluginManager().registerListener(this, this);
@@ -48,7 +52,9 @@ public class MaSuiteChat extends Plugin implements Listener {
         config.create(this, "chat", "messages.yml");
         config.create(this, "chat", "chat.yml");
 
-         // Load actions, servers and channels
+        mailService = new MailService(this);
+
+        // Load actions, servers and channels
         ServerManager.loadServers();
 
         new Updator(getDescription().getVersion(), getDescription().getName(), "60039").checkUpdates();
@@ -199,22 +205,22 @@ public class MaSuiteChat extends Plugin implements Listener {
                     }
 
                 }
-                /*if (childchannel.equals("Mail")) {
+                if (childchannel.equals("Mail")) {
                     String superchildchannel = in.readUTF();
-                    MailManager mm = new MailManager();
+                    MailController mailController = new MailController(this);
                     switch (superchildchannel) {
                         case ("Send"):
-                            mm.send(in.readUTF(), in.readUTF(), in.readUTF());
+                            mailController.sendMail(in.readUTF(), in.readUTF(), in.readUTF());
                             break;
                         case ("SendAll"):
-                            mm.sendAll(in.readUTF(), in.readUTF());
+                            mailController.sendAll(in.readUTF(), in.readUTF());
                             break;
                         case ("Read"):
-                            mm.read(in.readUTF());
+                            mailController.read(in.readUTF());
                             break;
                     }
 
-                }*/
+                }
 
                 if (childchannel.equals("Nick")) {
                     ProxiedPlayer sender = getProxy().getPlayer(UUID.fromString(in.readUTF()));
@@ -246,8 +252,8 @@ public class MaSuiteChat extends Plugin implements Listener {
                     if (utils.isOnline(sender)) {
                         updateNick(config, sender);
                     }
-
                 }
+
                 if (childchannel.equals("ResetNickOther")) {
                     ProxiedPlayer sender = getProxy().getPlayer(UUID.fromString(in.readUTF()));
                     ProxiedPlayer target = getProxy().getPlayer(in.readUTF());
