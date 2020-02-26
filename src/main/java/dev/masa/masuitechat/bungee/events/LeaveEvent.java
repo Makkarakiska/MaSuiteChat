@@ -18,8 +18,10 @@ public class LeaveEvent implements Listener {
         if (plugin.config.load("chat", "messages.yml").getBoolean("connection-message.enabled")) {
             plugin.utils.broadcast(
                     plugin.config.load("chat", "messages.yml")
-                    .getString("connection-message.left")
-                    .replace("%player%", e.getPlayer().getName()));
+                            .getString("connection-message.left")
+                            .replace("%player%", e.getPlayer().getName())
+                            .replace("%nickname%", e.getPlayer().getDisplayName())
+            );
         }
         MaSuiteChat.players.remove(e.getPlayer().getUniqueId());
     }

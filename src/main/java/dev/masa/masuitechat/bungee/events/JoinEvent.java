@@ -18,7 +18,9 @@ public class JoinEvent implements Listener {
         if (plugin.config.load("chat", "messages.yml").getBoolean("connection-message.enabled")) {
             plugin.utils.broadcast(plugin.config.load("chat", "messages.yml")
                     .getString("connection-message.join")
-                    .replace("%player%", e.getPlayer().getName()));
+                    .replace("%player%", e.getPlayer().getName())
+                    .replace("%nickname%", e.getPlayer().getDisplayName())
+            );
         }
         MaSuiteChat.players.put(e.getPlayer().getUniqueId(), "global");
 
@@ -31,7 +33,9 @@ public class JoinEvent implements Listener {
         if (plugin.config.load("chat", "messages.yml").getBoolean("motd.enabled")) {
             plugin.formator.sendMessage(e.getPlayer(), plugin.config.load("chat", "messages.yml")
                     .getString("motd.message")
-                    .replace("%player%", e.getPlayer().getName()));
+                    .replace("%player%", e.getPlayer().getName())
+                    .replace("%nickname%", e.getPlayer().getDisplayName())
+            );
         }
     }
 }

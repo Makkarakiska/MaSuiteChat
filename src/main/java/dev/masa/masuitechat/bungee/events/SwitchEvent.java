@@ -20,6 +20,7 @@ public class SwitchEvent implements Listener {
                 plugin.utils.broadcast(plugin.config.load("chat", "messages.yml")
                         .getString("switch-message.message")
                         .replace("%player%", e.getPlayer().getName())
+                        .replace("%nickname%", e.getPlayer().getDisplayName()
                         .replace("%server%", e.getPlayer().getServer().getInfo().getName())
                 );
             }
