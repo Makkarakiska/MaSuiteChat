@@ -21,7 +21,6 @@ public class AfkEvents implements Listener {
 
     public AfkEvents(MaSuiteChat plugin) {
         this.plugin = plugin;
-        afkDetector();
     }
 
     @EventHandler
@@ -81,26 +80,5 @@ public class AfkEvents implements Listener {
     public void onQuit(AsyncPlayerChatEvent event) {
         plugin.afkList.remove(event.getPlayer().getUniqueId());
         plugin.locations.remove(event.getPlayer().getUniqueId());
-    }
-
-    private void afkDetector() {
-        plugin.getServer().getScheduler().runTaskTimerAsynchronously(plugin, () -> {
-            for (Player player : plugin.getServer().getOnlinePlayers()) {
-                plugin.locations.put(player.getUniqueId(), player.getLocation());
-            }
-            plugin.getServer().getScheduler().runTaskLaterAsynchronously(plugin, () -> {
-                for (UUID uuid : plugin.locations.keySet()) {
-                    Player player = plugin.getServer().getPlayer(uuid);
-                    if (player != null) {
-                        if (plugin.locations.get(uuid).equals(player.getLocation())) {
-                            if (!plugin.afkList.contains(uuid)) {
-                                new BukkitPluginChannel(plugin, player, "MaSuiteChat", "Afk", uuid.toString(), true).send();
-                                plugin.afkList.add(uuid);
-                            }
-                        }
-                    }
-                }
-            }, 20 * 2);
-        }, 20 * 5, 20 * 300);
     }
 }
