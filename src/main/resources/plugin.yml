@@ -4,7 +4,4 @@ version: ${project.version}
 author: Masagameplay
 depend: [Vault, MaSuiteCore]
 softdepend: [GriefPrevention, WorldGuard]
-commands:
-  mail:
-    description: Send mail to player
-    aliases: [mailplayer, playermail, mailto]
+loadbefore: [Essentials]
