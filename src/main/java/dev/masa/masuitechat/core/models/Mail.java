@@ -1,10 +1,11 @@
 package dev.masa.masuitechat.core.models;
 
+import com.j256.ormlite.field.DataType;
+import com.j256.ormlite.field.DatabaseField;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.UUID;
@@ -12,34 +13,30 @@ import java.util.UUID;
 @NoArgsConstructor
 @RequiredArgsConstructor
 @Data
-@Entity
 @Table(name = "masuite_mail")
 public class Mail {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @DatabaseField(generatedId = true)
     private int id;
 
     @NonNull
-    @Column(name = "sender")
-    @Type(type = "uuid-char")
+    @DatabaseField(dataType = DataType.UUID)
     private UUID sender;
 
     @NonNull
-    @Column(name = "receiver")
-    @Type(type = "uuid-char")
+    @DatabaseField(dataType = DataType.UUID)
     private UUID receiver;
 
     @NonNull
-    @Column(name = "message")
+    @DatabaseField
     private String message;
 
     @NonNull
-    @Column(name = "seen")
+    @DatabaseField
     private Boolean seen = false;
 
     @NonNull
-    @Column(name = "timestamp")
+    @DatabaseField(dataType = DataType.LONG)
     private Long timestamp;
 
     public boolean isSeen() {

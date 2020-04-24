@@ -25,7 +25,7 @@ public class JoinEvent implements Listener {
         MaSuiteChat.players.put(e.getPlayer().getUniqueId(), "global");
 
         if (plugin.config.load("chat", "messages.yml").getBoolean("first-join.enabled"))
-            if (plugin.api.getPlayerService().getPlayer(e.getPlayer().getUniqueId()) == null) {
+            if (plugin.getApi().getPlayerService().getPlayer(e.getPlayer().getUniqueId()) == null) {
                 plugin.utils.broadcast(plugin.config.load("chat", "messages.yml")
                         .getString("first-join.message").replace("%player%", e.getPlayer().getName()));
             }

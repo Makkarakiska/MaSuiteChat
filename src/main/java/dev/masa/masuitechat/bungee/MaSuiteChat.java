@@ -14,6 +14,7 @@ import dev.masa.masuitecore.core.Updator;
 import dev.masa.masuitecore.core.api.MaSuiteCoreAPI;
 import dev.masa.masuitecore.core.configuration.BungeeConfiguration;
 import dev.masa.masuitecore.core.models.MaSuitePlayer;
+import lombok.Getter;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.PluginMessageEvent;
 import net.md_5.bungee.api.plugin.Listener;
@@ -40,9 +41,11 @@ public class MaSuiteChat extends Plugin implements Listener {
 
     public BungeeConfiguration config = new BungeeConfiguration();
 
-    public MaSuiteCoreAPI api = new MaSuiteCoreAPI();
+    @Getter
+    private MaSuiteCoreAPI api = new MaSuiteCoreAPI();
 
-    public MailService mailService;
+    @Getter
+    private MailService mailService;
 
     @Override
     public void onEnable() {

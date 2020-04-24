@@ -1,10 +1,13 @@
 package dev.masa.masuitechat.core.services;
 
+import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.DaoManager;
+import com.j256.ormlite.table.TableUtils;
 import dev.masa.masuitechat.bungee.MaSuiteChat;
 import dev.masa.masuitechat.core.models.Mail;
-import dev.masa.masuitecore.core.utils.HibernateUtil;
+import lombok.Getter;
+import lombok.SneakyThrows;
 
-import javax.persistence.EntityManager;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -12,13 +15,17 @@ import java.util.stream.Collectors;
 
 public class MailService {
 
-    private EntityManager entityManager = HibernateUtil.addClasses(Mail.class).getEntityManager();
-    public HashMap<UUID, List<Mail>> mails = new HashMap<>();
+    @Getter
+    private HashMap<UUID, List<Mail>> mails = new HashMap<>();
+    private Dao<Mail, Integer> mailDao;
 
     private MaSuiteChat plugin;
 
+    @SneakyThrows
     public MailService(MaSuiteChat plugin) {
         this.plugin = plugin;
+        this.mailDao = DaoManager.createDao(plugin.getApi().getDatabaseService().getConnection(), Mail.class);
+        TableUtils.createTableIfNotExists(plugin.getApi().getDatabaseService().getConnection(), Mail.class);
     }
 
     /**
@@ -26,10 +33,9 @@ public class MailService {
      *
      * @param mail mail to send
      */
+    @SneakyThrows
     public Mail sendMail(Mail mail) {
-        entityManager.getTransaction().begin();
-        entityManager.persist(mail);
-        entityManager.getTransaction().commit();
+        mailDao.create(mail);
         mails.get(mail.getReceiver()).add(mail);
 
         return mail;
@@ -39,12 +45,10 @@ public class MailService {
     /**
      * Mark {@link Mail} as read
      */
+    @SneakyThrows
     public Mail markAsRead(Mail mail) {
         mail.setSeen(true);
-        entityManager.getTransaction().begin();
-        entityManager.merge(mail);
-        entityManager.getTransaction().commit();
-
+        mailDao.update(mail);
         // Remove home from list and add new back
         List<Mail> mailList = mails.get(mail.getReceiver()).stream().filter(cachedMail -> cachedMail.getId() != mail.getId()).collect(Collectors.toList());
         mailList.add(mail);
@@ -57,11 +61,9 @@ public class MailService {
      *
      * @param mail mail to remove
      */
+    @SneakyThrows
     public void removeMail(Mail mail) {
-        entityManager.getTransaction().begin();
-        entityManager.remove(mail);
-        entityManager.getTransaction().commit();
-
+        mailDao.delete(mail);
         // Update cache
         mails.put(mail.getReceiver(), mails.get(mail.getReceiver()).stream().filter(cachedMail -> cachedMail.getId() != mail.getId()).collect(Collectors.toList()));
     }
@@ -72,14 +74,14 @@ public class MailService {
      * @param uuid owner of mailbox
      * @return returns a list of mails
      */
+    @SneakyThrows
     public List<Mail> getMails(UUID uuid) {
         if (mails.containsKey(uuid)) {
             return mails.get(uuid);
         }
 
-        List<Mail> mailList = entityManager.createQuery(
-                "SELECT m FROM Mail m WHERE m.receiver = :receiver AND m.seen = 0 ORDER BY m.timestamp", Mail.class)
-                .setParameter("receiver", uuid).getResultList();
+
+        List<Mail> mailList =  mailDao.queryBuilder().orderBy("timestamp", true).where().in("receiver", uuid).and().in("seen", 0).query();
         mails.put(uuid, mailList);
 
         return mailList;
@@ -90,10 +92,9 @@ public class MailService {
      *
      * @param uuid uuid of the owner
      */
+    @SneakyThrows
     public void initializeMailbox(UUID uuid) {
-        List<Mail> mailList = entityManager.createQuery(
-                "SELECT m FROM Mail m WHERE m.receiver = :receiver AND m.seen = 0 ORDER BY m.timestamp", Mail.class)
-                .setParameter("receiver", uuid).getResultList();
+        List<Mail> mailList = mailDao.queryBuilder().orderBy("timestamp", true).where().in("receiver", uuid).and().in("seen", 0).query();
         mails.put(uuid, mailList);
     }
 }

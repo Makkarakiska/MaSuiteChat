@@ -20,14 +20,14 @@ public class MailController {
         ProxiedPlayer sender = ProxyServer.getInstance().getPlayer(senderName);
         if (plugin.utils.isOnline(sender)) {
 
-            MaSuitePlayer receiver = plugin.api.getPlayerService().getPlayer(receiverName);
+            MaSuitePlayer receiver = plugin.getApi().getPlayerService().getPlayer(receiverName);
             if (receiver == null) {
                 plugin.formator.sendMessage(sender, plugin.config.load("chat", "messages.yml").getString("mail.player-not-found"));
                 return;
             }
             Mail mail = new Mail(sender.getUniqueId(), receiver.getUniqueId(), message, System.currentTimeMillis() / 1000);
 
-            plugin.mailService.sendMail(mail);
+            plugin.getMailService().sendMail(mail);
             plugin.formator.sendMessage(sender, plugin.config.load("chat", "messages.yml").getString("mail.sent").replace("%player%", receiver.getUsername()));
             if (plugin.utils.isOnline(ProxyServer.getInstance().getPlayer(receiverName))) {
                 plugin.formator.sendMessage(ProxyServer.getInstance().getPlayer(receiverName), plugin.config.load("chat", "messages.yml").getString("mail.received").replace("%player%", sender.getName()));
@@ -39,13 +39,13 @@ public class MailController {
         ProxiedPlayer sender = ProxyServer.getInstance().getPlayer(senderName);
         if (plugin.utils.isOnline(sender)) {
 
-            List<MaSuitePlayer> maSuitePlayers = plugin.api.getPlayerService().getAllPlayers(false);
+            List<MaSuitePlayer> maSuitePlayers = plugin.getApi().getPlayerService().getAllPlayers(false);
 
             maSuitePlayers.forEach(msp -> {
                 Mail mail = new Mail(sender.getUniqueId(), msp.getUniqueId(), message, System.currentTimeMillis() / 1000);
                 // Notify player(s)
                 plugin.getProxy().getScheduler().runAsync(plugin, () -> {
-                    plugin.mailService.sendMail(mail);
+                    plugin.getMailService().sendMail(mail);
                     plugin.formator.sendMessage(sender, plugin.config.load("chat", "messages.yml").getString("mail.sent").replace("%player%", msp.getUsername()));
                     if (plugin.utils.isOnline(ProxyServer.getInstance().getPlayer(msp.getUniqueId()))) {
                         plugin.formator.sendMessage(ProxyServer.getInstance().getPlayer(msp.getUniqueId()), plugin.config.load("chat", "messages.yml").getString("mail.received").replace("%player%", sender.getName()));
@@ -59,7 +59,7 @@ public class MailController {
         ProxiedPlayer receiver = ProxyServer.getInstance().getPlayer(receiverName);
         if (plugin.utils.isOnline(receiver)) {
 
-            List<Mail> mails = plugin.mailService.getMails(receiver.getUniqueId());
+            List<Mail> mails = plugin.getMailService().getMails(receiver.getUniqueId());
 
             if (mails.isEmpty()) {
                 plugin.formator.sendMessage(receiver, plugin.config.load("chat", "messages.yml").getString("mail.empty"));
@@ -67,12 +67,12 @@ public class MailController {
             }
             // Do some magic with mails
             mails.forEach(mail -> {
-                MaSuitePlayer sender = plugin.api.getPlayerService().getPlayer(mail.getSender());
+                MaSuitePlayer sender = plugin.getApi().getPlayerService().getPlayer(mail.getSender());
                 plugin.formator.sendMessage(receiver, plugin.config.load("chat", "chat.yml").getString("formats.mail")
                         .replace("%sender_realname%", sender.getUsername())
                         .replace("%sender_nickname%", sender.getNickname() != null ? sender.getNickname() : sender.getUsername())
                         .replace("%message%", mail.getMessage()));
-                plugin.mailService.markAsRead(mail);
+                plugin.getMailService().markAsRead(mail);
             });
         }
     }
