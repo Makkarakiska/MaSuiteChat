@@ -36,7 +36,7 @@ public class Mail {
     private Boolean seen = false;
 
     @NonNull
-    @DatabaseField(dataType = DataType.LONG)
+    @DatabaseField
     private Long timestamp;
 
     public boolean isSeen() {
