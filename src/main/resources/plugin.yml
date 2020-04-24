@@ -5,4 +5,4 @@ author: Masagameplay
 depend: [Vault, MaSuiteCore]
 softdepend: [GriefPrevention, WorldGuard]
 loadbefore: [Essentials]
-api-version: 1.15
+api-version: 1.13
