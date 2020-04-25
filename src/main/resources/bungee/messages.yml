@@ -1,0 +1,19 @@
+# Basic messages
+message-hover-actions: "&7Message sent at &9%timestamp%."
+no-player-to-reply: "&cNo players to reply"
+nickname-changed: "&aNick name changed to %nickname%"
+channel-changed:
+  staff: "&aChanged to Staff channel"
+  global: "&aChanged to Global channel"
+  server: "&aChanged to Server channel"
+  local: "&aChanged to Local channel"
+
+ignore-channel:
+  ingore: "&cYou are now ignoring that channel!"
+  unignore: "&aYou are now seeing that channel again!"
+#Mail
+mail:
+  player-not-found: "&cPlayer not found."
+  sent: "&7Mail sent to &b%player%"
+  received: "&7Mail received from &b%player%"
+  empty: "&cYour mailbox is empty!"

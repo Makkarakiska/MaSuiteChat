@@ -1,0 +1,14 @@
+# Available variables for channels are: %server% %prefix% %nickname% %realname% %suffix% and %message%.
+# Available variables for private messaging are: %sender_prefix% %sender_suffix% %sender_nickname% %sender_realname% %receiver_prefix% %receiver_suffix% %receiver_nickname% %receiver_realname% and %message%
+# Color codes are using usual &-format
+formats:
+  staff: "&cStaff &7%server% %prefix% %realname% &6>&r %message%"
+  global: "&7%server% %prefix% %realname% &6>&r %message%"
+  server: "&fServer %prefix% %realname% &6>&r %message%"
+  local: "&6Local %prefix% %realname% &6>&r %message%"
+  mail: "&b%sender_realname% &6> &7%message%"
+  private:
+    sender: "%sender_prefix% %sender_realname% %sender_suffix%&8-> %receiver_prefix% %receiver_realname% %receiver_suffix%&6>&r %message%"
+    receiver: "%sender_prefix% %sender_realname% %sender_suffix%&8-> %receiver_prefix% %receiver_realname% %receiver_suffix%&6>&r %message%"
+#Channels will be auto-generated
+channels:
