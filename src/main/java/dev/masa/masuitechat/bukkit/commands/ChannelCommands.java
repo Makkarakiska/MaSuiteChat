@@ -58,7 +58,7 @@ public class ChannelCommands extends BaseCommand {
         new BukkitPluginChannel(plugin, player, "MaSuiteChat", "SendMessage", "staff", player.getUniqueId().toString(), message).send();
     }
 
-    @CommandAlias("a|ac|sc|adminchat|admin|staff")
+    @CommandAlias("ignorechannel")
     @CommandPermission("masuitechat.ignore.channel")
     @Description("Ignore specific channel")
     @CommandCompletion("global|server")
