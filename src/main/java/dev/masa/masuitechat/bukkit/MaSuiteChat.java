@@ -26,7 +26,6 @@ public class MaSuiteChat extends JavaPlugin implements Listener {
     private static Chat chat = null;
 
     public BukkitConfiguration config = new BukkitConfiguration();
-    public Formator formator = new Formator();
     public List<UUID> afkList = new ArrayList<>();
 
     public HashMap<UUID, Location> locations = new HashMap<>();
