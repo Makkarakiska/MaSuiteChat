@@ -17,7 +17,7 @@ public class SwitchEvent implements Listener {
     public void onConnect(ServerConnectEvent e) {
         if (!(e.getPlayer().getServer() == null) && (e.getTarget() != null) && (!e.getPlayer().getServer().getInfo().equals(e.getTarget()))) {
             if (plugin.config.load("chat", "messages.yml").getBoolean("switch-message.enabled")) {
-                String server = plugin.config.load("chat", "chat.yml").getString("channels." + e.getPlayer().getServer().getInfo().getName().toLowerCase() + ".prefix");
+                String server = plugin.config.load("chat", "chat.yml").getString("channels." + e.getTarget().getName().toLowerCase() + ".prefix");
                 plugin.utils.broadcast(plugin.config.load("chat", "messages.yml")
                         .getString("switch-message.message")
                         .replace("%player%", e.getPlayer().getName())
