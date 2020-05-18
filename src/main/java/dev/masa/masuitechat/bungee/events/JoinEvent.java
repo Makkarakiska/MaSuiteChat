@@ -17,7 +17,7 @@ public class JoinEvent implements Listener {
     @EventHandler
     public void onConnect(ServerConnectEvent e) {
         if (e.getReason().equals(ServerConnectEvent.Reason.JOIN_PROXY)) {
-            String server = plugin.config.load("chat", "chat.yml").getString("channels." + e.getPlayer().getServer().getInfo().getName().toLowerCase() + ".prefix");
+            String server = plugin.config.load("chat", "chat.yml").getString("channels." + e.getTarget().getName().toLowerCase() + ".prefix");
             if (plugin.config.load("chat", "messages.yml").getBoolean("connection-message.enabled")) {
 
                 plugin.utils.broadcast(plugin.config.load("chat", "messages.yml")
