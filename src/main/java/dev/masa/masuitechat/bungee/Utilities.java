@@ -12,6 +12,7 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 public class Utilities {
 
@@ -37,9 +38,12 @@ public class Utilities {
         }
 
         TextComponent message = MDChat.getMessageFromString(format);
+        SimpleDateFormat customDate = new SimpleDateFormat(config.load("chat", "messages.yml").getString("timestamp-format"));
+        customDate.setTimeZone(TimeZone.getTimeZone(config.load("chat", "messages.yml").getString("timestamp-timezone")));
+        String dateFormat  = customDate.format(new Date());
         return new ComponentBuilder(message).event(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                 new ComponentBuilder(formator.colorize(config.load("chat", "messages.yml")
                         .getString("message-hover-actions")
-                        .replace("%timestamp%", new SimpleDateFormat("HH:mm:ss").format(new Date())))).create())).create();
+                        .replace("%timestamp%", dateFormat))).create())).create();
     }
 }

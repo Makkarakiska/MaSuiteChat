@@ -81,8 +81,8 @@ public class MaSuiteChat extends Plugin implements Listener {
         config.addDefault("chat/messages.yml", "first-join.enabled", true);
         config.addDefault("chat/messages.yml", "first-join.message", "9%player%&7 has joined for the first time!");
 
-        config.addDefault("chat/messages.yml", "afk.on", "&9%player% &7is now afk.");
-        config.addDefault("chat/messages.yml", "afk.off", "&9%player% &7is no longer afk.");
+        config.addDefault("chat/messages.yml", "afk.on", "&9%player% &7is now AFK.");
+        config.addDefault("chat/messages.yml", "afk.off", "&9%player% &7is no longer AFK.");
 
         config.addDefault("chat/messages.yml", "ignore.on", "&aYou are now ignoring %player%.");
         config.addDefault("chat/messages.yml", "ignore.off", "&cYou are not ignoring %player% anymore.");
