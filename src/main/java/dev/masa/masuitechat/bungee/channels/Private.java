@@ -1,5 +1,6 @@
 package dev.masa.masuitechat.bungee.channels;
 
+import dev.masa.masuitechat.bungee.MaSuiteChat;
 import dev.masa.masuitechat.bungee.objects.Group;
 import dev.masa.masuitecore.bungee.Utils;
 import dev.masa.masuitecore.bungee.chat.Formator;
@@ -32,8 +33,10 @@ public class Private {
 
         if (utils.isOnline(receiver, sender)) {
             create(sender, receiver, msg);
-            conversations.put(receiver.getUniqueId(), sender.getUniqueId());
-            conversations.put(sender.getUniqueId(), receiver.getUniqueId());
+            if(MaSuiteChat.ignores.get(receiver.getUniqueId()) == null || !MaSuiteChat.ignores.get(receiver.getUniqueId()).contains(sender.getUniqueId())) {
+        		conversations.put(receiver.getUniqueId(), sender.getUniqueId());
+        	}
+        	conversations.put(sender.getUniqueId(), receiver.getUniqueId());
         } else {
             sender.sendMessage(new TextComponent(new Formator().colorize(config.load(null, "messages.yml").getString("player-not-online"))));
         }
@@ -67,24 +70,20 @@ public class Private {
                 .replace("%receiver_prefix%", receiverInfo.getPrefix())
                 .replace("%receiver_suffix%", receiverInfo.getSuffix())
         );
-        if (sender.hasPermission("masuitechat.chat.colors")) {
-            senderFormat = formator.colorize(senderFormat.replace("%message%", msg));
-            receiverFormat = formator.colorize(receiverFormat.replace("%message%", msg));
-        } else {
-            senderFormat = senderFormat.replace("%message%", msg);
-            receiverFormat = receiverFormat.replace("%message%", msg);
-        }
-
         HoverEvent he = new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                 new ComponentBuilder(formator.colorize(config.load("chat", "messages.yml")
                         .getString("message-hover-actions")
                         .replace("%timestamp%", dateFormat))).create());
-        if (sender.hasPermission("masuitechat.chat.colors")) {
-            sender.sendMessage(new ComponentBuilder(MDChat.getMessageFromString(senderFormat)).event(he).create());
-            receiver.sendMessage(new ComponentBuilder(MDChat.getMessageFromString(receiverFormat)).event(he).create());
+        if(sender.hasPermission("masuitechat.chat.colors")) {
+            sender.sendMessage(new ComponentBuilder(MDChat.getMessageFromString(formator.colorize(senderFormat.replace("%message%", msg)))).event(he).create());
+            if(MaSuiteChat.ignores.get(receiver.getUniqueId()) == null || !MaSuiteChat.ignores.get(receiver.getUniqueId()).contains(sender.getUniqueId())) {
+            	receiver.sendMessage(new ComponentBuilder(MDChat.getMessageFromString(formator.colorize(receiverFormat.replace("%message%", msg)))).event(he).create());
+            }
         } else {
-            sender.sendMessage(new ComponentBuilder(MDChat.getMessageFromString(senderFormat, false)).event(he).create());
-            receiver.sendMessage(new ComponentBuilder(MDChat.getMessageFromString(receiverFormat, false)).event(he).create());
+            sender.sendMessage(new ComponentBuilder(MDChat.getMessageFromString(senderFormat.replace("%message%", msg), false)).event(he).create());
+            if(MaSuiteChat.ignores.get(receiver.getUniqueId()) == null || !MaSuiteChat.ignores.get(receiver.getUniqueId()).contains(sender.getUniqueId())) {
+            	receiver.sendMessage(new ComponentBuilder(MDChat.getMessageFromString(receiverFormat.replace("%message%", msg), false)).event(he).create());
+            }
         }
     }
 }
