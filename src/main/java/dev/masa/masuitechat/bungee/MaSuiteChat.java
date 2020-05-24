@@ -65,6 +65,17 @@ public class MaSuiteChat extends Plugin implements Listener {
             luckPermsApi = true;
         }
 
+        config.addDefault("chat/messages.yml", "message-hover-action", "&7Message sent at &9%timestamp%&7.");
+        config.addDefault("chat/messages.yml", "timestamp-format", "kk:mm:ss a z");
+        config.addDefault("chat/messages.yml", "timestamp-timezone", "America/Chicago");
+        config.addDefault("chat/messages.yml", "no-player-to-reply", "&cNo players to reply");
+        config.addDefault("chat/messages.yml", "nickname-changed", "&aNickname changed to %nickname%");
+        
+        config.addDefault("chat/messages.yml", "channel-changed.staff", "&aChanged to staff channel");
+        config.addDefault("chat/messages.yml", "channel-changed.global", "&aChanged to global channel");
+        config.addDefault("chat/messages.yml", "channel-changed.server", "&aChanged to server channel");
+        config.addDefault("chat/messages.yml", "channel-changed.local", "&aChanged to local channel");
+        
         config.addDefault("chat/messages.yml", "ignore-channel.ignore", "&cYou are now ignoring that channel!");
         config.addDefault("chat/messages.yml", "ignore-channel.unignore", "&aYou are now seeing that channel again!");
 
