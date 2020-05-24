@@ -13,6 +13,7 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.TimeZone;
 import java.util.UUID;
 
 
@@ -41,6 +42,9 @@ public class Private {
     public void create(ProxiedPlayer sender, ProxiedPlayer receiver, String msg) {
         String senderFormat = config.load("chat", "chat.yml").getString("formats.private.sender");
         String receiverFormat = config.load("chat", "chat.yml").getString("formats.private.receiver");
+        SimpleDateFormat customDate = new SimpleDateFormat(config.load("chat", "messages.yml").getString("timestamp-format"));
+        customDate.setTimeZone(TimeZone.getTimeZone(config.load("chat", "messages.yml").getString("timestamp-timezone")));
+        String dateFormat  = customDate.format(new Date());
         Group senderInfo = new Group().get(sender.getUniqueId());
         Group receiverInfo = new Group().get(receiver.getUniqueId());
         senderFormat = formator.colorize(senderFormat
@@ -74,7 +78,7 @@ public class Private {
         HoverEvent he = new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                 new ComponentBuilder(formator.colorize(config.load("chat", "messages.yml")
                         .getString("message-hover-actions")
-                        .replace("%timestamp%", new SimpleDateFormat("HH:mm:ss").format(new Date())))).create());
+                        .replace("%timestamp%", dateFormat))).create());
         if (sender.hasPermission("masuitechat.chat.colors")) {
             sender.sendMessage(new ComponentBuilder(MDChat.getMessageFromString(senderFormat)).event(he).create());
             receiver.sendMessage(new ComponentBuilder(MDChat.getMessageFromString(receiverFormat)).event(he).create());
