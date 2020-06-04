@@ -47,7 +47,7 @@ public class ChannelCommands extends BaseCommand {
         new BukkitPluginChannel(plugin, player, "MaSuiteChat", "SendMessage", "local", player.getUniqueId().toString(), message).send();
     }
 
-    @CommandAlias("a|ac|sc|adminchat|admin|staff")
+    @CommandAlias("a|ac|sc|adminchat|admin")
     @CommandPermission("masuitechat.channel.staff")
     @Description("Send message or toggle staff channel")
     public void staffChannelCommand(Player player, @Optional String message) {
