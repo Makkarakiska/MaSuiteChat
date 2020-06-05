@@ -108,6 +108,7 @@ public class MaSuiteChat extends Plugin implements Listener {
         config.addDefault("chat/chat.yml", "formats.msgstaff", "&8&l[&7%nickname% &8-> &9Staff&8&l]: &r&f%message%");
         config.addDefault("chat/chat.yml", "formats.private.sender", "&c&l(!) &8&l[&7&lYou &8-> &7%receiver_nickname%&8&l]: &f%message%");
         config.addDefault("chat/chat.yml", "formats.private.receiver", "&c&l(!) &8&l[&7%sender_nickname% &8-> &7&lYou&8&l]: &f%message%");
+        config.addDefault("chat/chat.yml", "change-defaultchannel-on-server-switch", true);
 
         getProxy().getPluginManager().registerListener(this, new SwitchEvent(this));
         getProxy().getPluginManager().registerListener(this, new LeaveEvent(this));

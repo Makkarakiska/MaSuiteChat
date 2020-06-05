@@ -25,8 +25,10 @@ public class SwitchEvent implements Listener {
                         .replace("%server%", server)
                 );
             }
-            MaSuiteChat.players.put(e.getPlayer().getUniqueId(), plugin.config.load("chat", "chat.yml")
-                    .getString("channels." + e.getTarget().getName().toLowerCase() + ".defaultChannel"));
+            if (plugin.config.load("chat", "chat.yml").getBoolean("change-defaultchannel-on-server-switch")) {
+            	MaSuiteChat.players.put(e.getPlayer().getUniqueId(), plugin.config.load("chat", "chat.yml")
+	                    .getString("channels." + e.getTarget().getName().toLowerCase() + ".defaultChannel"));
+            }
         }
     }
 }

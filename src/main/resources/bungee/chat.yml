@@ -12,4 +12,5 @@ formats:
     sender: "&c&l(!) &8&l[&7&lYou &8-> &7%receiver_nickname%&8&l]: &f%message%"
     receiver: "&c&l(!) &8&l[&7%sender_nickname% &8-> &7&lYou&8&l]: &f%message%"
 #Channels will be auto-generated
+change-defaultchannel-on-server-switch: true
 channels:
