@@ -80,9 +80,9 @@ public class Private {
             	receiver.sendMessage(new ComponentBuilder(MDChat.getMessageFromString(formator.colorize(receiverFormat.replace("%message%", msg)))).event(he).create());
             }
         } else {
-            sender.sendMessage(new ComponentBuilder(MDChat.getMessageFromString(senderFormat.replace("%message%", msg), false)).event(he).create());
+            sender.sendMessage(new ComponentBuilder(MDChat.getMessageFromString(senderFormat.replace("%message%", msg))).event(he).create());
             if(MaSuiteChat.ignores.get(receiver.getUniqueId()) == null || !MaSuiteChat.ignores.get(receiver.getUniqueId()).contains(sender.getUniqueId())) {
-            	receiver.sendMessage(new ComponentBuilder(MDChat.getMessageFromString(receiverFormat.replace("%message%", msg), false)).event(he).create());
+            	receiver.sendMessage(new ComponentBuilder(MDChat.getMessageFromString(receiverFormat.replace("%message%", msg))).event(he).create());
             }
         }
     }
