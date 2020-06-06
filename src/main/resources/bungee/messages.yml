@@ -1,7 +1,7 @@
 # Basic messages
 message-hover-actions: "&7Message sent at &9%timestamp%&7."
 # Timestamp must have proper formatting; reference: https://docs.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html
-timestamp-format: "kk:mm:ss a z"
+timestamp-format: "hh:mm:ss a z"
 timestamp-timezone: "America/Chicago"
 no-player-to-reply: "&cNo players to reply"
 nickname-changed: "&aNickname changed to %nickname%"
