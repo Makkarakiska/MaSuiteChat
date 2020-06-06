@@ -68,7 +68,7 @@ public class MaSuiteChat extends Plugin implements Listener {
         }
 
         config.addDefault("chat/messages.yml", "message-hover-actions", "&7Message sent at &9%timestamp%&7.");
-        config.addDefault("chat/messages.yml", "timestamp-format", "kk:mm:ss a z");
+        config.addDefault("chat/messages.yml", "timestamp-format", "hh:mm:ss a z");
         config.addDefault("chat/messages.yml", "timestamp-timezone", "America/Chicago");
         config.addDefault("chat/messages.yml", "no-player-to-reply", "&cNo players to reply");
         config.addDefault("chat/messages.yml", "nickname-changed", "&aNickname changed to %nickname%");
