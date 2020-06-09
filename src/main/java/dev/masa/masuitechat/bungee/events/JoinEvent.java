@@ -19,7 +19,6 @@ public class JoinEvent implements Listener {
         if (e.getReason().equals(ServerConnectEvent.Reason.JOIN_PROXY)) {
             String server = plugin.config.load("chat", "chat.yml").getString("channels." + e.getTarget().getName().toLowerCase() + ".prefix");
             if (plugin.config.load("chat", "messages.yml").getBoolean("connection-message.enabled")) {
-
                 plugin.utils.broadcast(plugin.config.load("chat", "messages.yml")
                         .getString("connection-message.join")
                         .replace("%player%", e.getPlayer().getName())
@@ -27,7 +26,8 @@ public class JoinEvent implements Listener {
                         .replace("%server%", server)
                 );
             }
-            MaSuiteChat.players.put(e.getPlayer().getUniqueId(), "global");
+            MaSuiteChat.players.put(e.getPlayer().getUniqueId(), plugin.config.load("chat", "chat.yml")
+                    .getString("channels." + e.getTarget().getName().toLowerCase() + ".defaultChannel"));
 
             if (plugin.config.load("chat", "messages.yml").getBoolean("first-join.enabled"))
                 if (plugin.getApi().getPlayerService().getPlayer(e.getPlayer().getUniqueId()) == null) {

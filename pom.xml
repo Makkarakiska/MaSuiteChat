@@ -42,12 +42,16 @@
     </build>
     <repositories>
         <repository>
-            <id>vault-repo</id>
-            <url>http://nexus.hc.to/content/repositories/pub_releases</url>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
         </repository>
         <repository>
             <id>codemc-repo</id>
             <url>https://repo.codemc.org/repository/maven-snapshots/</url>
+        </repository>
+        <repository>
+            <id>spigot-repo</id>
+            <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
     </repositories>
     <dependencies>
@@ -65,10 +69,10 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot-api</artifactId>
-            <version>1.15.2-R0.1-SNAPSHOT</version>
-            <scope>provided</scope>
+               <groupId>org.spigotmc</groupId>
+               <artifactId>spigot-api</artifactId>
+               <version>1.15.2-R0.1-SNAPSHOT</version>
+               <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>dev.masa</groupId>
@@ -77,10 +81,9 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>net.milkbowl.vault</groupId>
+            <groupId>com.github.MilkBowl</groupId>
             <artifactId>VaultAPI</artifactId>
             <version>1.7</version>
-            <scope>provided</scope>
         </dependency>
         <!-- Permission plugins -->
         <dependency>

@@ -65,6 +65,7 @@ public class MaSuiteChat extends JavaPlugin implements Listener {
         manager.registerCommand(new PrivateMessageCommand(this));
         manager.registerCommand(new ReplyCommand(this));
         manager.registerCommand(new MailCommand(this));
+        manager.registerCommand(new MsgStaffCommand(this));
         CommandManagerUtil.registerMaSuitePlayerCommandCompletion(manager);
     }
 

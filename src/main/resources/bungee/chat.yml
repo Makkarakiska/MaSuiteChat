@@ -2,13 +2,15 @@
 # Available variables for private messaging are: %sender_prefix% %sender_suffix% %sender_nickname% %sender_realname% %receiver_prefix% %receiver_suffix% %receiver_nickname% %receiver_realname% and %message%
 # Color codes are using usual &-format
 formats:
-  staff: "&cStaff &7%server% %prefix% %realname% &6>&r %message%"
-  global: "&7%server% %prefix% %realname% &6>&r %message%"
-  server: "&fServer %prefix% %realname% &6>&r %message%"
-  local: "&6Local %prefix% %realname% &6>&r %message%"
-  mail: "&b%sender_realname% &6> &7%message%"
+  staff: "(Staff) &7(%server%) %prefix%&r&7%nickname%&r: %message%"
+  global: "(%server%) %prefix%&r&7%nickname%&r: %message%"
+  server: "(Server) %prefix%&r&7%nickname%&r: %message%"
+  local: "(Local) %prefix%&r&7%nickname%&r: %message%"
+  mail: "[Mail] &b%sender_nickname%&7: %message%"
+  msgstaff: "&8&l[&7%nickname% &8-> &9Staff&8&l]: &r&f%message%"
   private:
-    sender: "%sender_prefix% %sender_realname% %sender_suffix%&8-> %receiver_prefix% %receiver_realname% %receiver_suffix%&6>&r %message%"
-    receiver: "%sender_prefix% %sender_realname% %sender_suffix%&8-> %receiver_prefix% %receiver_realname% %receiver_suffix%&6>&r %message%"
+    sender: "&c&l(!) &8&l[&7&lYou &8-> &7%receiver_nickname%&8&l]: &f%message%"
+    receiver: "&c&l(!) &8&l[&7%sender_nickname% &8-> &7&lYou&8&l]: &f%message%"
 #Channels will be auto-generated
+change-defaultchannel-on-server-switch: true
 channels:

@@ -15,6 +15,8 @@ import dev.masa.masuitecore.core.api.MaSuiteCoreAPI;
 import dev.masa.masuitecore.core.configuration.BungeeConfiguration;
 import dev.masa.masuitecore.core.models.MaSuitePlayer;
 import lombok.Getter;
+import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.PluginMessageEvent;
 import net.md_5.bungee.api.plugin.Listener;
@@ -65,6 +67,17 @@ public class MaSuiteChat extends Plugin implements Listener {
             luckPermsApi = true;
         }
 
+        config.addDefault("chat/messages.yml", "message-hover-actions", "&7Message sent at &9%timestamp%&7.");
+        config.addDefault("chat/messages.yml", "timestamp-format", "hh:mm:ss a z");
+        config.addDefault("chat/messages.yml", "timestamp-timezone", "America/Chicago");
+        config.addDefault("chat/messages.yml", "no-player-to-reply", "&cNo players to reply");
+        config.addDefault("chat/messages.yml", "nickname-changed", "&aNickname changed to %nickname%");
+        
+        config.addDefault("chat/messages.yml", "channel-changed.staff", "&aChanged to staff channel");
+        config.addDefault("chat/messages.yml", "channel-changed.global", "&aChanged to global channel");
+        config.addDefault("chat/messages.yml", "channel-changed.server", "&aChanged to server channel");
+        config.addDefault("chat/messages.yml", "channel-changed.local", "&aChanged to local channel");
+        
         config.addDefault("chat/messages.yml", "ignore-channel.ignore", "&cYou are now ignoring that channel!");
         config.addDefault("chat/messages.yml", "ignore-channel.unignore", "&aYou are now seeing that channel again!");
 
@@ -81,11 +94,21 @@ public class MaSuiteChat extends Plugin implements Listener {
         config.addDefault("chat/messages.yml", "first-join.enabled", true);
         config.addDefault("chat/messages.yml", "first-join.message", "9%player%&7 has joined for the first time!");
 
-        config.addDefault("chat/messages.yml", "afk.on", "&9%player% &7is now afk.");
-        config.addDefault("chat/messages.yml", "afk.off", "&9%player% &7is no longer afk.");
+        config.addDefault("chat/messages.yml", "afk.on", "&9%player% &7is now AFK.");
+        config.addDefault("chat/messages.yml", "afk.off", "&9%player% &7is no longer AFK.");
 
         config.addDefault("chat/messages.yml", "ignore.on", "&aYou are now ignoring %player%.");
         config.addDefault("chat/messages.yml", "ignore.off", "&cYou are not ignoring %player% anymore.");
+
+        config.addDefault("chat/chat.yml", "formats.staff", "(Staff) &7(%server%) %prefix%&r&7%nickname%&r: %message%");
+        config.addDefault("chat/chat.yml", "formats.global", "(%server%) %prefix%&r&7%nickname%&r: %message%");
+        config.addDefault("chat/chat.yml", "formats.server", "(Server) %prefix%&r&7%nickname%&r: %message%");
+        config.addDefault("chat/chat.yml", "formats.local", "(Local) %prefix%&r&7%nickname%&r: %message%");
+        config.addDefault("chat/chat.yml", "formats.mail", "[Mail] &b%sender_nickname%&7: %message%");
+        config.addDefault("chat/chat.yml", "formats.msgstaff", "&8&l[&7%nickname% &8-> &9Staff&8&l]: &r&f%message%");
+        config.addDefault("chat/chat.yml", "formats.private.sender", "&c&l(!) &8&l[&7&lYou &8-> &7%receiver_nickname%&8&l]: &f%message%");
+        config.addDefault("chat/chat.yml", "formats.private.receiver", "&c&l(!) &8&l[&7%sender_nickname% &8-> &7&lYou&8&l]: &f%message%");
+        config.addDefault("chat/chat.yml", "change-defaultchannel-on-server-switch", true);
 
         getProxy().getPluginManager().registerListener(this, new SwitchEvent(this));
         getProxy().getPluginManager().registerListener(this, new LeaveEvent(this));
@@ -322,6 +345,17 @@ public class MaSuiteChat extends Plugin implements Listener {
                         }
                     }
                 }
+                if (childchannel.equals("MsgStaff")) {
+                	ProxiedPlayer sender = getProxy().getPlayer(UUID.fromString(in.readUTF()));
+                	String msg = in.readUTF();
+                	BaseComponent[] txt = Utilities.chatFormat(sender, msg, "msgstaff");
+                    for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
+                    	if (player.getUniqueId() == sender.getUniqueId() || player.hasPermission("masuitechat.msgstaff.receive")) {
+	                    	player.sendMessage(txt);
+                    	}
+                    }
+                }
+
             }
         }
     }

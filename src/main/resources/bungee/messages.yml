@@ -1,19 +1,22 @@
 # Basic messages
-message-hover-actions: "&7Message sent at &9%timestamp%."
+message-hover-actions: "&7Message sent at &9%timestamp%&7."
+# Timestamp must have proper formatting; reference: https://docs.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html
+timestamp-format: "hh:mm:ss a z"
+timestamp-timezone: "America/Chicago"
 no-player-to-reply: "&cNo players to reply"
-nickname-changed: "&aNick name changed to %nickname%"
+nickname-changed: "&aNickname changed to %nickname%"
 channel-changed:
-  staff: "&aChanged to Staff channel"
-  global: "&aChanged to Global channel"
-  server: "&aChanged to Server channel"
-  local: "&aChanged to Local channel"
+  staff: "&aChanged to staff channel"
+  global: "&aChanged to global channel"
+  server: "&aChanged to server channel"
+  local: "&aChanged to local channel"
 
 ignore-channel:
-  ingore: "&cYou are now ignoring that channel!"
+  ignore: "&cYou are now ignoring that channel!"
   unignore: "&aYou are now seeing that channel again!"
 #Mail
 mail:
-  player-not-found: "&cPlayer not found."
-  sent: "&7Mail sent to &b%player%"
-  received: "&7Mail received from &b%player%"
+  player-not-found: "&cPlayer was not found."
+  sent: "&7You have sent mail to &9%player%"
+  received: "&7You have received mail from &9%player%"
   empty: "&cYour mailbox is empty!"
