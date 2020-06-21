@@ -92,7 +92,7 @@ public class MaSuiteChat extends Plugin implements Listener {
         config.addDefault("chat/messages.yml", "motd.message", "&7Welcome to our server, &9%player%&7!");
 
         config.addDefault("chat/messages.yml", "first-join.enabled", true);
-        config.addDefault("chat/messages.yml", "first-join.message", "9%player%&7 has joined for the first time!");
+        config.addDefault("chat/messages.yml", "first-join.message", "&9%player%&7 has joined for the first time!");
 
         config.addDefault("chat/messages.yml", "afk.on", "&9%player% &7is now AFK.");
         config.addDefault("chat/messages.yml", "afk.off", "&9%player% &7is no longer AFK.");
