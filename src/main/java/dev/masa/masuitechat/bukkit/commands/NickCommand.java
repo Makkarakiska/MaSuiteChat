@@ -19,6 +19,10 @@ public class NickCommand extends BaseCommand {
     @Description("Give a nick name for player")
     @CommandCompletion("* @masuite_players")
     public void nickCommand(Player player, String nick, @Optional @CommandPermission("masuitechat.nick.other") String onlinePlayer) {
+        if(nick.contains("&") && !player.hasPermission("masuitechat.nick.color")) {
+            plugin.formator.sendMessage(player, plugin.config.load(null, "messages.yml").getString("no-permission"));
+            return;
+        }
         if (onlinePlayer == null) {
             new BukkitPluginChannel(plugin, player, "MaSuiteChat", "Nick", player.getUniqueId().toString(), nick).send();
             return;
